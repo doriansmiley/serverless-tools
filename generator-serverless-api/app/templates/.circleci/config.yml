@@ -1,0 +1,134 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  test-suites:
+    docker:
+      - image: 166461770341.dkr.ecr.us-west-2.amazonaws.com/build/lambda-node
+
+    environment:
+      - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
+      - API_GATEWAY_HOST=localhost
+      - API_GATEWAY_PORT=3000
+      - JWT_SECRET=anything
+      - STAGE=local
+      - ALERT_EMAIL=dsmiley@mfour.com
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout:
+          path: ~/repo
+
+      - add_ssh_keys:
+          fingerprints:
+          - "ad:dd:cd:fe:15:ca:0b:1f:1c:f2:4f:32:30:34:37:06"
+
+      - run:
+          name: Install yarn
+          command: npm install yarn -g
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: "npm login"
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+
+      - run:
+          name: "Install npm packages"
+          command: |
+              yarn install
+
+      - run:
+          name: "Update dependencies with linked branches"
+          command: sh ./automation/scripts/linkbranches.sh
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # CircleCI does not support interpolation when setting environment variables
+      # As a workaround, use a run step to export environment variables
+      - run:
+          name: "Run tests"
+          command: yarn run build && yarn run test
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  api-staging:
+    docker:
+      - image: 166461770341.dkr.ecr.us-west-2.amazonaws.com/build/lambda-node
+
+    environment:
+      - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
+      - API_GATEWAY_HOST=127.0.0.1
+      - API_GATEWAY_PORT=3000
+      - STAGE=local
+
+    working_directory: ~/repo
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: "Deploy Gateway Function"
+          command:  |
+            # create aws creds file. The argument passed to the script dictates the keypair that is used
+            # The chosen keypair dictates which environment the build is deployed to, for example dev, test, staging, pr prod
+            mkdir ~/.aws
+            sh ci_scripts/ci_create_aws_creds_file.sh ~/.aws/credentials development
+
+            # remove prohibited characters from stage name, replace . with x
+            export STAGE_NAME=$(echo ${CIRCLE_TAG:-$CIRCLE_BRANCH} | sed "s/[\.]/x/g" | sed "s/[^a-zA-Z0-9\-]//g")
+
+            # npm login
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+
+            # deploy
+            serverless deploy -v --aws-profile serverless \
+              --jwt-secret $JWT_SECRET \
+              --vpc-security-group $AWS_SECURITY_GROUP \
+              --vpc-subnet-a $AWS_SUBNET_A \
+              --vpc-subnet-b $AWS_SUBNET_B \
+              --stage $STAGE \
+              --alert-email $AWS_ALERT_EMAIL
+
+      - store_artifacts:
+          path: .serverless
+          # The value here is used to create the artifacts directory in Circle, can be anything
+          destination: api-gateway-lambda
+
+workflows:
+  version: 2
+
+  build-deploy-api:
+    jobs:
+      - test-suites:
+          context: microservices-global
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
+      # note deployment is not working at this time: https://mfourmobile.atlassian.net/browse/KP-76
+      - api-staging:
+          context: microservices-global
+          requires:
+            - test-suites
+          filters:
+            branches:
+              only: /.release\/.*$/
+            tags:
+              only: /.*/

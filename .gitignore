@@ -1,0 +1,10 @@
+node_modules
+dist
+/.idea
+/.DS_Store
+/.build
+/nohup.out
+/.serverless
+/_warmup
+/generator-serverless-api/templates/nohup.out
+.DS_Store

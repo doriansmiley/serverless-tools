@@ -1,0 +1,210 @@
+service: aws-mfour-placeholder-api
+custom:
+    version: 1.0.0
+    appName: aws-mfour-placeholder-api
+    webpack:
+      webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+      includeModules: false   # Node modules configuration for packaging
+      packager: 'npm'   # Packager that will be used to package your external modules
+      excludeFiles: test/**/*.js # Provide a glob for files to ignore
+    # note I have disabled the plugin from generating code by commenting out default: true
+    # serverless-plugin-warmup keeps throwing an error when compiling
+    # I have opened an issue here to address: https://github.com/FidelLimited/serverless-plugin-warmup/issues/85
+    # If it ever gets resolved we can comment the code in and get rid of our hacks.
+    warmup:
+      enabled: true # Whether to warm up functions by default or not
+      folderName: '_warmup' # Name of the folder created for the generated warmup
+      cleanFolder: false
+      memorySize: 256
+      role: lambdaWarmUpRole
+      tags:
+        Project: foo
+        Owner: bar
+      vpc: true
+      events:
+        - schedule: 'cron(0/5 8-17 ? * MON-FRI *)' # Run WarmUp every 5 minutes Mon-Fri between 8:00am and 5:55pm (UTC)
+      timeout: 20
+      prewarm: true # Run WarmUp immediately after a deploymentlambda
+      payload:
+        source: my-custom-source
+        other: 20
+      concurrency: 5 # Warm up 5 concurrent instances
+    alerts:
+      topics:
+        alarm:
+          topic: ${self:service}-${opt:stage}-alerts-alarm
+          notifications:
+            - protocol: email
+              endpoint: ${opt:alert-email}
+        alarms:
+            - functionErrors
+            - functionDuration
+            - functionThrottles
+plugins:
+    - serverless-webpack
+    - serverless-offline
+    - serverless-plugin-stage-variables
+    - serverless-plugin-aws-alerts
+    - serverless-plugin-bind-deployment-id
+    - serverless-plugin-tracing
+    - serverless-plugin-include-dependencies
+    - serverless-plugin-warmup
+provider:
+    name: aws
+    runtime: nodejs8.10
+    stage: dev
+    memorySize: 512
+    tracing: true
+    region: us-west-2
+    profile: serverless
+    environment:
+        API_VERSION: '${self:custom.version}'
+        APP_NAME: '${self:custom.appName}'
+    iamRoleStatements:
+        -
+            Effect: Allow
+            Action: ['xray:PutTraceSegments', 'xray:PutTelemetryRecords']
+            Resource: '*'
+        -
+            Effect: Allow
+            Action: ['ec2:CreateNetworkInterface']
+            Resource: '*'
+        -
+            Effect: Allow
+            Action: ['apigateway:POST', 'apigateway:PUT', 'apigateway:PATCH', 'apigateway:DELETE', 'apigateway:GET', 'apigateway:HEAD', 'apigateway:OPTIONS']
+            Resource: 'arn:aws:execute-api:*:*:ApiGatewayRestApi/*'
+        -
+            Effect: Allow
+            Action: ['s3:GetObject']
+            Resource:
+              - Fn::GetAtt: [ AutoCompleteS3Bucket, Arn ]
+              - Fn::Join: ['', [ Fn::GetAtt: [ AutoCompleteS3Bucket, Arn ], "/*" ]]
+        -
+            Effect: Allow
+            Action: ['lambda:InvokeFunction']
+            Resource:
+              - Fn::Join:
+                - ':'
+                - - arn:aws:lambda
+                  - Ref: AWS::Region
+                  - Ref: AWS::AccountId
+                  - function:${self:service}-${opt:stage, self:provider.stage}-*
+
+package:
+    excludeDevDependencies: true
+    exclude:
+        - '.git/**'
+        - '.circle/**'
+        - 'test/**'
+        - 'dist'
+        - .gitignore
+        - .npmignore
+        - tsconfig.json
+    include:
+        - 'Globals.js'
+        - 'apiSpec.json'
+functions:
+<% routes.forEach(function(route){ %>
+    <%- route.operationId %>:
+        handler: src/index.handler
+        events:
+            - http:
+                path: <%- apiVersion + route.route %>
+                method: <%- route.verb.toLowerCase() %>
+                cors:
+                    origin: '*'
+                    headers:
+                      - Content-Type
+                      - Authorization
+                      - x-amzn-trace-id
+        warmup:
+            enabled:
+              - dev
+              - staging
+              - prod
+        environment:
+            STAGE: ${opt:stage}
+            JWT_SECRET: ${opt:jwt-secret}
+        vpc:
+          securityGroupIds:
+            - ${opt:vpc-security-group}
+          subnetIds:
+            - ${opt:vpc-subnet-a}
+            - ${opt:vpc-subnet-b}
+<% }); %>
+resources:
+    Resources:
+        AutoCompleteS3Bucket:
+          Type: "AWS::S3::Bucket"
+          Properties:
+            BucketName: ${self:service}-${opt:stage}-placeholder
+        ApiGatewayStage:
+              Type: AWS::ApiGateway::Stage
+              Properties:
+                RestApiId:
+                  Ref: "ApiGatewayRestApi"
+                DeploymentId:
+                  # refer to https://github.com/svdgraaf/serverless-plugin-stage-variables/issues/15 for __deployment__
+                  Ref: __deployment__
+                MethodSettings:
+                  - DataTraceEnabled: true
+                    HttpMethod: "*"
+                    LoggingLevel: INFO
+                    ResourcePath: "/*"
+                    MetricsEnabled: true
+        #
+        # Cloudwatch Alarms
+        #
+        EventsInvocationsMinAlarm:
+          Type: "AWS::CloudWatch::Alarm"
+          Properties:
+            AlarmName: ${self:service}-${opt:stage}-placeholderInvocationsMin
+            Namespace: 'AWS/Lambda'
+            MetricName: Invocations
+            Threshold: 5
+            Statistic: Sum
+            Period: 300
+            ComparisonOperator: LessThanOrEqualToThreshold
+            EvaluationPeriods: 1
+            Dimensions:
+              -
+                Name: "FunctionName"
+                Value: ${self:service}-${opt:stage}-placeholder
+            AlarmActions:
+              - { Ref: "AwsAlertsAlarm" }
+
+        Events4xxErrorsAlarm:
+          Type: "AWS::CloudWatch::Alarm"
+          Properties:
+            AlarmName: ${self:service}-${opt:stage}-placeholder4xxErrors
+            Namespace: 'AWS/ApiGateway'
+            MetricName: 4XXError
+            Threshold: 5
+            Statistic: Sum
+            Period: 300
+            ComparisonOperator: GreaterThanOrEqualToThreshold
+            EvaluationPeriods: 1
+            Dimensions:
+              -
+                Name: "ApiName"
+                Value: ${opt:stage}-${self:service}
+            AlarmActions:
+              - { Ref: "AwsAlertsAlarm" }
+
+        Events5xxErrorsAlarm:
+          Type: "AWS::CloudWatch::Alarm"
+          Properties:
+            AlarmName: ${self:service}-${opt:stage}-placeholder5xxErrors
+            Namespace: 'AWS/ApiGateway'
+            MetricName: 5XXError
+            Threshold: 5
+            Statistic: Sum
+            Period: 300
+            ComparisonOperator: GreaterThanOrEqualToThreshold
+            EvaluationPeriods: 1
+            Dimensions:
+              -
+                Name: "ApiName"
+                Value: ${opt:stage}-${self:service}
+            AlarmActions:
+              - { Ref: "AwsAlertsAlarm" }

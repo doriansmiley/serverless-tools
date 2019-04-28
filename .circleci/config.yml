@@ -1,0 +1,77 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  apigateway-tests:
+    docker:
+      - image: 166461770341.dkr.ecr.us-west-2.amazonaws.com/build/lambda-node
+
+    environment:
+      - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
+      - TEST_API_GATEWAY_HOST=127.0.0.1
+      - TEST_API_GATEWAY_PORT=3000
+      - JWT_SECRET=anything
+      - STAGE=local
+      - ALERT_EMAIL=dsmiley@mfour.com
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout:
+          path: ~/repo
+
+      - add_ssh_keys:
+          fingerprints:
+          - "ad:dd:cd:fe:15:ca:0b:1f:1c:f2:4f:32:30:34:37:06"
+
+      - run:
+          name: Install yarn
+          command: npm install yarn -g
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: "npm login"
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+
+      - run:
+          name: "Install npm packages"
+          command: |
+              yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # CircleCI does not support interpolation when setting environment variables
+      # As a workaround, use a run step to export environment variables
+      # comment in when tests are ready
+      # - run:
+          # name: "Run tests"
+          # command: yarn run build && yarn run test
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+workflows:
+  version: 2
+
+  build-deploy-api:
+    jobs:
+      - apigateway-tests:
+          context: microservices-global
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/

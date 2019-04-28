@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "lib": ["ES6", "ES2016", "dom"],
+    "target": "es6",
+    "declaration": true,
+    "rootDir": "./src/",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "webpack"
+  ],
+  "include": [
+    "./src/**/*"
+  ]
+}

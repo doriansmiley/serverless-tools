@@ -1,0 +1,17 @@
+{
+  "name": "@mfourmobile/generator-serverless-api",
+  "version": "1.0.3",
+  "description": "",
+  "files": [
+    "app",
+    "templates"
+  ],
+  "keywords": [
+    "yeoman-generator",
+    "generator-serverless-api"
+  ],
+  "dependencies": {
+    "openapi-schema-validator": "^3.0.2",
+    "yeoman-generator": "^3.2.0"
+  }
+}
