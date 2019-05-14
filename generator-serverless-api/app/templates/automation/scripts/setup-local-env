@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ -z ${JWT_SECRET} ]]; then export JWT_SECRET='anything'; fi
+if [[ -z ${ALERT_EMAIL} ]]; then export ALERT_EMAIL='anything'; fi
+if [[ -z ${API_GATEWAY_HOST} ]]; then export API_GATEWAY_HOST='localhost'; fi
+if [[ -z ${API_GATEWAY_PORT} ]]; then export API_GATEWAY_PORT=3000; fi
+if [[ -z ${STAGE} ]]; then export STAGE=local; fi

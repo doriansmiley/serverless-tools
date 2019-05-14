@@ -1,10 +1,10 @@
-service: aws-mfour-placeholder-api
+service: aws-mfour-<%- apiName %>-api
 custom:
     version: 1.0.0
-    appName: aws-mfour-placeholder-api
+    appName: aws-mfour-<%- apiName %>-api
     webpack:
       webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
-      includeModules: false   # Node modules configuration for packaging
+      includeModules: true   # Node modules configuration for packaging
       packager: 'npm'   # Packager that will be used to package your external modules
       excludeFiles: test/**/*.js # Provide a glob for files to ignore
     # note I have disabled the plugin from generating code by commenting out default: true
@@ -47,8 +47,9 @@ plugins:
     - serverless-plugin-aws-alerts
     - serverless-plugin-bind-deployment-id
     - serverless-plugin-tracing
-    - serverless-plugin-include-dependencies
     - serverless-plugin-warmup
+    - serverless-plugin-canary-deployments
+
 provider:
     name: aws
     runtime: nodejs8.10
@@ -61,6 +62,10 @@ provider:
         API_VERSION: '${self:custom.version}'
         APP_NAME: '${self:custom.appName}'
     iamRoleStatements:
+        -
+            Effect: Allow
+            Action: ['codedeploy:*']
+            Resource: "*"
         -
             Effect: Allow
             Action: ['xray:PutTraceSegments', 'xray:PutTelemetryRecords']
@@ -94,7 +99,7 @@ package:
     excludeDevDependencies: true
     exclude:
         - '.git/**'
-        - '.circle/**'
+        - '.circleci/**'
         - 'test/**'
         - 'dist'
         - .gitignore
@@ -131,13 +136,43 @@ functions:
           subnetIds:
             - ${opt:vpc-subnet-a}
             - ${opt:vpc-subnet-b}
+        alarms:
+          - name: Exceptions
+            namespace: 'AWS/Lambda'
+            metric: Errors
+            threshold: 1
+            statistic: Sum
+            period: 60 # 1 minute
+            evaluationPeriods: 1
+            comparisonOperator: GreaterThanOrEqualToThreshold
+        deploymentSettings:
+          type: Linear10PercentEvery1Minute
+          alias: Live
+          alarms:
+            - <%- route.operationId %>ExceptionsAlarm
+          preTrafficHook: pre<%- route.operationId %>
+
+    pre<%- route.operationId %>:
+      handler: src/deployHooks.pre
+      tracing: false
+      environment:
+        FUNCTION_NAME: ${self:service}-${opt:stage}-<%- route.operationId %>
+        STAGE: ${opt:stage}
+        SERVICE_NAME: ${self:service}
+        JWT_SECRET: ${opt:jwt-secret}
+      vpc:
+        securityGroupIds:
+          - ${opt:vpc-security-group}
+        subnetIds:
+          - ${opt:vpc-subnet-a}
+          - ${opt:vpc-subnet-b}
 <% }); %>
 resources:
     Resources:
         AutoCompleteS3Bucket:
           Type: "AWS::S3::Bucket"
           Properties:
-            BucketName: ${self:service}-${opt:stage}-placeholder
+            BucketName: ${self:service}-${opt:stage}-<%- apiName %>
         ApiGatewayStage:
               Type: AWS::ApiGateway::Stage
               Properties:
@@ -158,7 +193,7 @@ resources:
         EventsInvocationsMinAlarm:
           Type: "AWS::CloudWatch::Alarm"
           Properties:
-            AlarmName: ${self:service}-${opt:stage}-placeholderInvocationsMin
+            AlarmName: ${self:service}-${opt:stage}-<%- apiName %>InvocationsMin
             Namespace: 'AWS/Lambda'
             MetricName: Invocations
             Threshold: 5
@@ -169,14 +204,14 @@ resources:
             Dimensions:
               -
                 Name: "FunctionName"
-                Value: ${self:service}-${opt:stage}-placeholder
+                Value: ${self:service}-${opt:stage}-<%- apiName %>
             AlarmActions:
               - { Ref: "AwsAlertsAlarm" }
 
         Events4xxErrorsAlarm:
           Type: "AWS::CloudWatch::Alarm"
           Properties:
-            AlarmName: ${self:service}-${opt:stage}-placeholder4xxErrors
+            AlarmName: ${self:service}-${opt:stage}-<%- apiName %>4xxErrors
             Namespace: 'AWS/ApiGateway'
             MetricName: 4XXError
             Threshold: 5
@@ -194,7 +229,7 @@ resources:
         Events5xxErrorsAlarm:
           Type: "AWS::CloudWatch::Alarm"
           Properties:
-            AlarmName: ${self:service}-${opt:stage}-placeholder5xxErrors
+            AlarmName: ${self:service}-${opt:stage}-<%- apiName %>5xxErrors
             Namespace: 'AWS/ApiGateway'
             MetricName: 5XXError
             Threshold: 5

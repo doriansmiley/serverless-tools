@@ -29,11 +29,11 @@ app.options('*', cors(corsOptions));
 app.use(bodyParser.json());
 
 // init XRay middleware, all controllers, DAOs, etc will append sub-segments
-app.use(AWSXRay.express.openSegment('Auto Complete API'));
+app.use(AWSXRay.express.openSegment('<%- apiName %> API'));
 
 // IMPORTANT: all routes that do not require JWT authentication must be declared ahead of registering the middleware with app.use
 app.get('/', cors(), function (req, res) {
-    res.status(200).send('Hello World! I am the Placeholder Complete API ' +  process.env.API_VERSION);
+    res.status(200).send('Hello World! I am the <%- apiName %> API ' +  process.env.API_VERSION);
 });
 
 // IMPORTANT: API Gateway & Lambda can not be used as a web server to serve static content!!!

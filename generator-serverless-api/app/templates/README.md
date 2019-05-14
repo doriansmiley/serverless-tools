@@ -108,7 +108,7 @@ We deploy to AWS using serverless directly. You will need the AWS Credentials se
 ```bash
 serverless deploy -v \
     --profile <profile> \
-    --stage development \
+    --stage dev \
     --alert-email "<email>" \
     --jwt-secret "<jwtsecret>" \
     --max-suggestion-file-size 50000 \

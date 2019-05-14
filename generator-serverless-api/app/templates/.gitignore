@@ -1,0 +1,9 @@
+dist/**
+.webpack/**
+.serverless/**
+node_modules/**
+nohup.out
+.DS_Store
+.idea/**
+test/assetStorage/**
+!test/assetStorage/README.md

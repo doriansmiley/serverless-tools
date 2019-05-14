@@ -1,4 +1,5 @@
 /.DS_Store
 /.idea
+!core
 node_modules
 .gitignore

@@ -4,6 +4,7 @@ let Generator = require('yeoman-generator');
 let fs = require('fs');
 let path = require('path')
 const OpenAPISchemaValidator = require('openapi-schema-validator').default;
+const SERVICE_NAME_MAX_LENGTH = 20;
 
 class MFourApiGenerator extends Generator {
     // The name `constructor` is important here
@@ -24,6 +25,7 @@ class MFourApiGenerator extends Generator {
         // hard code v1 in the correct format
         this.apiVersion = 'v1.0.0';
         this.specFile = null;
+        this.deployHookCase = [];
     }
 
     // Your initialization methods (checking current project state, getting configs, etc)
@@ -46,10 +48,10 @@ class MFourApiGenerator extends Generator {
                             const validator = new OpenAPISchemaValidator({version: 3});
                             const result = validator.validate(json);
                             if (result.errors.length === 0) {
-                                if (/^[a-z0-9\-_]+$/i.exec(json.info.title)) {
+                                if (/^[a-z0-9\-_]+$/i.exec(json.info.title) && json.info.title.length <= SERVICE_NAME_MAX_LENGTH) {
                                     return true;
                                 } else {
-                                    return 'The provided spec file constains an invalid api name. Please enter a valid api name. No spaces, lowercase a-z characters and - or _ only.';
+                                    return 'The provided spec file constains an invalid api name. Please enter a valid api name. Must be <= '+SERVICE_NAME_MAX_LENGTH+' characters, no spaces, lowercase a-z characters and - or _ only.';
                                 }
                             } else {
                                 return 'The provided spec file is invalid! Please be sure it is an instance of Open API v3';
@@ -116,7 +118,6 @@ class MFourApiGenerator extends Generator {
                 apiName: this.answers.apiName
             }
         );
-
         // copy test suites
         this.fs.copy(
             this.templatePath('test/integration/IntegrationUtils.js'),
@@ -136,7 +137,8 @@ class MFourApiGenerator extends Generator {
         for (let route of this.routes) {
             let className = null;
             let integrationTestFilename = null;
-
+            // create switch case statements for deploy hooks
+            this.deployHookCase.push('case serviceName + \'-\' + stageName + \'-' + route.operationId + '\': return pre' + route.operationId + '(event, context, callback);');
             // remove route params from test routes since the unit tests supply these values
             let testRoute = route.route.replace(/\/{.*}/g, '');
             // replace route params with express syntax
@@ -234,6 +236,10 @@ class MFourApiGenerator extends Generator {
             this.destinationPath('.npmignore')
         );
         this.fs.copy(
+            this.templatePath('.gitignore'),
+            this.destinationPath('.gitignore')
+        );
+        this.fs.copy(
             this.templatePath('Globals.js'),
             this.destinationPath('Globals.js')
         );
@@ -248,6 +254,15 @@ class MFourApiGenerator extends Generator {
                 routesDefs: this.routesDefs,
                 apiName: this.answers.apiName,
                 importStatements: this.importStatements
+            }
+        );
+        this.fs.copyTpl(
+            this.templatePath('src/deployHooks.ts'),
+            this.destinationPath('src/deployHooks.ts'),
+            {
+                apiVersion: '/v' + parseInt(this.apiVersion, 10),
+                routes: this.routes,
+                caseStatement: this.deployHookCase.join('\n        ')
             }
         );
         this.fs.copy(
@@ -271,6 +286,7 @@ class MFourApiGenerator extends Generator {
             this.templatePath('serverless.yml'),
             this.destinationPath('serverless.yml'),
             {
+                apiName: this.answers.apiName,
                 routes: this.routes,
                 apiVersion: '/v' + parseInt(this.apiVersion, 10)
             }
