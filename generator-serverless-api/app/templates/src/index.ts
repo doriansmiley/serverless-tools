@@ -7,10 +7,8 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as AWSXRay from 'aws-xray-sdk';
 import * as AWS from 'aws-sdk';
-import * as swaggerUi from 'swagger-ui-express';
-import {JWTController} from '@mfourmobile/mfour-node-sdk';
-import {XSSController} from '@mfourmobile/mfour-node-sdk/dist/expressMiddleware/XSSController';
-import {ServiceContext} from '@mfourmobile/mfour-client-sdk';
+import {JWTController} from './controllers/JWTController';
+import {XSSController} from './controllers/XSSController';
 import * as cors from 'cors';
 const debug = require('debug')('<%- apiName %>');
 <%- importStatements %>
