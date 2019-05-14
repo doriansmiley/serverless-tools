@@ -4,9 +4,6 @@
 // @IMPORTANT: allows us to include the MFour Client SDK for tests
 let globalFunction = require('../../Globals.js');
 globalFunction();
-const assert = require('assert');
-const MFour = require('@mfourmobile/mfour-client-sdk/dist');
-const MFourNode = require('@mfourmobile/mfour-node-sdk/dist/bundle').MFourNode;
 const jwt = require('jsonwebtoken');
 let util = require('util');
 const http = require('http');

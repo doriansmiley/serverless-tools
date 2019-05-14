@@ -4,10 +4,6 @@
 let globalFunction = require('../Globals.js');
 globalFunction();
 const http = require('http');
-const assert = require('assert');
-const jwt = require('jsonwebtoken');
-const MFour = require('@mfourmobile/mfour-client-sdk/dist');
-const MFourNode = require('@mfourmobile/mfour-node-sdk/dist');
 const OpenAPISchemaValidator = require('openapi-schema-validator').default;
 const fs = require("fs");
 

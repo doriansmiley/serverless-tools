@@ -5,11 +5,7 @@ let globalFunction = require('../../Globals.js');
 globalFunction();
 const http = require('http');
 const assert = require('assert');
-const jwt = require('jsonwebtoken');
-const MFour = require('@mfourmobile/mfour-client-sdk/dist');
-const MFourNode = require('@mfourmobile/mfour-node-sdk/dist');
 const IntegrationUtils = require('./IntegrationUtils.js');
-const OpenAPISchemaValidator = require('openapi-schema-validator').default;
 const fs = require("fs");
 
 describe('POST /v1<%- route %>', function() {
@@ -258,44 +254,6 @@ describe('POST /v1<%- route %>', function() {
                 console.log("error", err);
                 done(err);
             });
-        });
-        req.on('error', function (err) {
-            console.log("error", err);
-            done(err);
-        });
-        req.write(JSON.stringify(postData));
-        req.end();
-    }).timeout(25000);
-
-    it('should return 500 when clientId does not exist in JWT', function(done) {
-        // TODO: refactor these tests once business logic is implemented in your controllers
-        const tmpValues = {
-            tmp: 'someValue'
-        };
-
-        const jsonArtifact = JSON.stringify(tmpValues);
-        const clientId = '1111';
-        const postData = {
-            clientId: clientId,
-            driverValues: jsonArtifact
-        };
-        const token = jwt.sign({ foo: 'bar' }, jwtSecret, { algorithm: 'HS256'});
-        const options = {
-            method: 'POST',
-            host: host,
-            port: port,
-            protocol: protocol,
-            path: '/v1<%- route %>',
-            headers: {
-                'Content-Type' : 'application/json',
-                'authorization' : `Bearer ${token}`
-            }
-        };
-        const req = httpLib.request(options, function (res) {
-            console.log(res.statusCode);
-            console.log(res.statusMessage);
-            assert.equal(500, res.statusCode);
-            done();
         });
         req.on('error', function (err) {
             console.log("error", err);

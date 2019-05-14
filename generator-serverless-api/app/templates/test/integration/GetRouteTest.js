@@ -5,11 +5,7 @@ let globalFunction = require('../../Globals.js');
 globalFunction();
 const http = require('http');
 const assert = require('assert');
-const jwt = require('jsonwebtoken');
-const MFour = require('@mfourmobile/mfour-client-sdk/dist');
-const MFourNode = require('@mfourmobile/mfour-node-sdk/dist');
 const IntegrationUtils = require('./IntegrationUtils.js');
-const OpenAPISchemaValidator = require('openapi-schema-validator').default;
 const fs = require("fs");
 
 describe('GET /v1<%- route %>/:id', function() {
@@ -143,50 +139,6 @@ describe('GET /v1<%- route %>/:id', function() {
             console.log(res.statusMessage);
             assert.equal(403, res.statusCode);
             done();
-        });
-        req.on('error', function (err) {
-            console.log("error", err);
-            done(err);
-        });
-        req.end();
-    }).timeout(25000);
-
-    it('should return 500 when clientId does not exist in JWT', function(done) {
-        const id = '1234';
-        const clientId = '1';
-        const token = jwt.sign({ foo: 'bar' }, jwtSecret, { algorithm: 'HS256'});
-        const options = {
-            method: 'GET',
-            host: host,
-            port: port,
-            protocol: protocol,
-            path: `/v1<%- route %>/${id}`,
-            headers: {
-                'Content-Type' : 'application/json',
-                'authorization' : `Bearer ${token}`
-            }
-        };
-        const req = httpLib.request(options, function (res) {
-            var data = [];
-
-            res.on('data', function (chunk) {
-                data.push(chunk);
-            });
-
-            res.on('end', function () {
-                var result = Buffer.concat(data);
-                console.log('Response code: ' + res.statusCode);
-                console.log('Response headers : ' + JSON.stringify(res.headers));
-                console.log('Response: ' + result.toString());
-
-                // assert 500 response
-                assert.equal(500, res.statusCode);
-                done();
-            });
-            res.on('error', function (err) {
-                console.log("error", err);
-                done(err);
-            });
         });
         req.on('error', function (err) {
             console.log("error", err);
