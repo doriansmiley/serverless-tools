@@ -1,13 +1,10 @@
-import {ServiceError, SecurityException} from '@mfourmobile/mfour-node-sdk';
-import {IServiceSerializer} from '@mfourmobile/mfour-client-sdk';
-import { object, array, number, string, validate, ValidationOptions, ValidationResult as JoiValidationResult } from 'joi';
+import {ServiceError} from '../error/ServiceError';
+import {SecurityException} from '../error/SecurityException';
+import {LogLevels} from './AbstractController';
+import {IContext} from "../core/IContext";
+import { validate, ValidationOptions, ValidationResult as JoiValidationResult } from 'joi';
 import * as express from 'express';
 import {Controller} from './Controller';
-import {LogLevels} from '@mfourmobile/mfour-node-sdk';
-import {ServiceContext} from '@mfourmobile/mfour-client-sdk';
-const debug = require('debug')('<%- apiName %>:controllers');
-
-import * as util from 'util';
 
 export class <%- className %> extends Controller {
 
@@ -27,24 +24,8 @@ export class <%- className %> extends Controller {
                 throw error;
             }
 
-            const json: any = null;
-
-            // get clientId from JWT
-            if (!req.hasOwnProperty('token') || !req.token.hasOwnProperty('clientId')) {
-                throw new ServiceError('ClientId was not found in token', 400);
-            }
-
-            const tokenClientId: string = req.token.clientId;
-
-            if (typeof tokenClientId !== 'string' || tokenClientId.length === 0) {
-                throw new SecurityException('ClientId found in token is invalid');
-            }
-
             // create context
-            const context: ServiceContext = this.createContext();
-
-            // get a reference to service serializer.
-            const serializer: IServiceSerializer = this.getSerializer(context);
+            const context: IContext = this.createContext();
 
             // TODO: code out your controller logic, be sure to pass context to your business objects.
             // This makes your code threadsafe when accessing service objects

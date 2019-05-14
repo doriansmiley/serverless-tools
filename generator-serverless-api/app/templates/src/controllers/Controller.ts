@@ -1,6 +1,11 @@
-import {Config, Context, IServiceSerializer, InjectionToken, UuidUtils} from '@mfourmobile/mfour-client-sdk';
-import {AbstractController, ServiceError, DriverError, SecurityException, LogLevels} from '@mfourmobile/mfour-node-sdk';
+import {Config} from '../core/Config';
+import {Context} from '../core/Context';
+import {ServiceError} from '../error/ServiceError';
+import {UuidUtils} from '../util/UuidUtils';
 import * as express from 'express';
+import {IConfig} from "../core/IConfig";
+import {AbstractController} from "./AbstractController"
+import {LogLevels} from "./AbstractController"
 const debug = require('debug')('<%- apiName %>:controllers');
 
 export class Controller extends AbstractController {
@@ -14,16 +19,15 @@ export class Controller extends AbstractController {
         const vResult = this.validate(req);
         if (vResult.error !== null) {
             const error = new ServiceError(vResult.error.message, 400);
-            // TODO: pass debug instance as a log function once AbstractController is refactored
             this.log(LogLevels.ERROR, vResult.error.message, null, req, error);
-            return error;
+            return error
         }
         return null;
     }
 
     protected createContext(): Context {
         // create context
-        const config: Config = new Config();
+        let config: IConfig = new Config();
 
         return new Context(config);
     }
@@ -32,36 +36,15 @@ export class Controller extends AbstractController {
         return UuidUtils.generateUUID();
     }
 
-    public getSerializer(context: Context): IServiceSerializer {
-        return context.injector.inject(InjectionToken.SERVICE_SERIALIZER) as IServiceSerializer;
-    }
-
     public resolveServiceError(e: Error): ServiceError {
 
         let errorCode = 500;
 
         if (e instanceof RangeError) {
             errorCode = 400;
-        } else if (e instanceof DriverError) {
-            switch (e.message) {
-                case DriverError.FILE_NOT_FOUND:
-                    errorCode = 404;
-                    break;
-                case DriverError.UNDEFINED_ARTIFACT_FILE_NAME:
-                case DriverError.INVALID_ARTIFACT_FILE_INSTANCE_TYPE:
-                case DriverError.UNDEFINED_ARTIFACT_TYPE:
-                case DriverError.INVALID_ARTIFACT_INSTANCE_TYPE:
-                case DriverError.UNSUPPORTED_ARTIFACT_TYPE:
-                case DriverError.INVALID_ARTIFACT_FILE_NAME:
-                    errorCode = 400;
-                    break;
-            }
-        } else if (e instanceof SecurityException) {
-            switch (e.message) {
-                case SecurityException.NOT_AUTHORIZED:
-                    errorCode = 401;
-                    break;
-            }
+        } else {
+            // TODO: add exception handling and set error code appropriately
+            errorCode = 500;
         }
 
         return new ServiceError(e.message, errorCode);
