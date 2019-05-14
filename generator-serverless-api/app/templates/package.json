@@ -15,8 +15,6 @@
   "author": "Dorian Smiley <dsmiley@mfour.com>",
   "license": "ISC",
   "dependencies": {
-    "@mfourmobile/mfour-client-sdk": "git+ssh://git@github.com/MFourMobile/client-sdk.git#develop",
-    "@mfourmobile/mfour-node-sdk": "git+ssh://git@github.com/MFourMobile/mfour-node-sdk.git#develop",
     "async": "^2.6.1",
     "atob": "^2.1.2",
     "aws-sdk": "^2.334.0",
