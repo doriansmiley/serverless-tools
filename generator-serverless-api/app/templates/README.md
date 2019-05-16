@@ -3,8 +3,6 @@
 
 <!-- 
 TODO: add badges
-# <a href="https://circleci.com/gh/MFourMobile/mfour-auto-complete-service">
-# <img src="https://circleci.com/gh/MFourMobile/mfour-auto-complete-service.svg?style=shield&circle-token=6ade52254f840a128823978162dd02efdde393f6" alt="Build Status"></a>
 -->
 
 ## Dependencies
@@ -15,13 +13,13 @@ TODO: add badges
 
 ## Setup
 
-You will need yarn to manage packages
+You will need npm to manage packages
 ```bash
-npm install yarn -g
+npm install npm -g
 ```
 
 ```bash
-yarn install
+npm install
 ```
 
 Global npm packages are optional but recommended
@@ -50,7 +48,7 @@ export AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
 
 You will need to build the app when making changes and before testing.
 ```bash
-yarn run build
+npm run build
 ```
 
 ## Testing
@@ -61,7 +59,7 @@ There are two test suites: unit and integration
 
 To run all test suites you can simply run this command:
 ```bash
-yarn run test
+npm run test
 ```
 
 To run only the unit test suite:
@@ -72,18 +70,6 @@ npm run unit-test
 To run only the integration test suite
 ```bash
 npm run integration-test
-```
-
-### Using Yarn for Transitive Dependency Management
-You can use [yarn link](https://yarnpkg.com/lang/en/docs/cli/link/) to link dependencies.
-```bash
-cd ~/workspace/client-sdk && yarn link
-cd ~/workspace/mfour-node-sdk/ && yarn link && yarn link @mfourmobile/mfour-client-sdk
-cd ~/workspace/mfour-survey-service/ && yarn link @mfourmobile/mfour-client-sdk @mfourmobile/mfour-node-sdk
-```
-To remove linked dependencies use `yarn unlink`:
-```
-yarn unlink @mfourmobile/mfour-client-sdk
 ```
 
 ### Offline Testing

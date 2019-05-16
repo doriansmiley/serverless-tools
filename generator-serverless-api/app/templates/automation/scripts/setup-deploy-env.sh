@@ -57,11 +57,11 @@ set -euo pipefail
 # Retrieve parameters from AWS for circleci build
 ##########################################################
 # @todo: set up environment variables for this service from aws parameter store, default ones are already added
-#JWT_SECRET=`aws ssm get-parameter --with-decryption --name /mfour/placeholder/jwt_secret --profile serverless --query "Parameter.Value" | tr -d '"' `
-#AWS_ALERT_EMAIL=`aws ssm get-parameter --with-decryption --name /mfour/placeholder/aws_alert_email --profile serverless --query "Parameter.Value" | tr -d '"' `
-#AWS_SECURITY_GROUP=`aws ssm get-parameter --with-decryption --name /mfour/placeholder/aws_security_group --profile serverless --query "Parameter.Value" | tr -d '"' `
-#AWS_SUBNET_A=`aws ssm get-parameter --with-decryption --name /mfour/placeholder/aws_subnet_a --profile serverless --query "Parameter.Value" | tr -d '"' `
-#AWS_SUBNET_B=`aws ssm get-parameter --with-decryption --name /mfour/placeholder/aws_subnet_b --profile serverless --query "Parameter.Value" | tr -d '"' `
+#JWT_SECRET=`aws ssm get-parameter --with-decryption --name /placeholder/jwt_secret --profile serverless --query "Parameter.Value" | tr -d '"' `
+#AWS_ALERT_EMAIL=`aws ssm get-parameter --with-decryption --name /placeholder/aws_alert_email --profile serverless --query "Parameter.Value" | tr -d '"' `
+#AWS_SECURITY_GROUP=`aws ssm get-parameter --with-decryption --name /placeholder/aws_security_group --profile serverless --query "Parameter.Value" | tr -d '"' `
+#AWS_SUBNET_A=`aws ssm get-parameter --with-decryption --name /placeholder/aws_subnet_a --profile serverless --query "Parameter.Value" | tr -d '"' `
+#AWS_SUBNET_B=`aws ssm get-parameter --with-decryption --name /placeholder/aws_subnet_b --profile serverless --query "Parameter.Value" | tr -d '"' `
 
 ####################################
 # Export to env vars

@@ -1,8 +1,8 @@
 'use strict';
 
 import * as AWS from 'aws-sdk';
-import {LambdaPreDeployUtils} from '@mfourmobile/mfour-node-sdk';
-import {TestResultEnum} from '@mfourmobile/mfour-node-sdk';
+import {LambdaPreDeployUtils} from './util/LambdaPreDeployUtils';
+import {TestResultEnum} from './util/LambdaPreDeployUtils';
 const jwt = require('jsonwebtoken');
 const lambda = new AWS.Lambda();
 const codeDeploy = new AWS.CodeDeploy();

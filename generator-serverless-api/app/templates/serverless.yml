@@ -1,7 +1,7 @@
-service: aws-mfour-<%- apiName %>-api
+service: aws-<%- apiName %>-api
 custom:
     version: 1.0.0
-    appName: aws-mfour-<%- apiName %>-api
+    appName: aws-<%- apiName %>-api
     webpack:
       webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
       includeModules: true   # Node modules configuration for packaging

@@ -14,7 +14,7 @@ jobs:
       - API_GATEWAY_PORT=3000
       - JWT_SECRET=anything
       - STAGE=local
-      - ALERT_EMAIL=dsmiley@mfour.com
+      - ALERT_EMAIL=you@you.com
 
     working_directory: ~/repo
 
@@ -38,25 +38,6 @@ jobs:
           name: "npm login"
           command: |
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-
-      - run:
-          name: Download build scripts
-          command: |
-            mkdir -p /build && cd /build
-            git clone --depth 1 -b master git@github.com:MFourMobile/mfour-build-tools.git .
-
-      - run:
-          name: Install node service dependencies
-          command: |
-            if [[ ! -z ${CIRCLE_TAG} ]]; then export CIRCLE_BRANCH=master; fi
-            CLIENT_SDK_BRANCH=$(bash /build/src/find_branch.sh --project-branch ${CIRCLE_BRANCH} --default-branch develop --repo-url git@github.com:MFourMobile/client-sdk.git --package-name @mfourmobile/mfour-client-sdk)
-            NODE_SDK_BRANCH=$(bash /build/src/find_branch.sh --project-branch ${CIRCLE_BRANCH} --default-branch develop --repo-url git@github.com:MFourMobile/mfour-node-sdk.git --package-name @mfourmobile/mfour-node-sdk)
-            echo "Installing mfour-client-sdk @ ${CLIENT_SDK_BRANCH}"
-            echo "Installing mfour-node-sdk @ ${NODE_SDK_BRANCH}"
-            # install dependencies
-            npm config set unsafe-perm true && npm install \
-              git+ssh://git@github.com:MFourMobile/client-sdk.git#${CLIENT_SDK_BRANCH} \
-              git+ssh://git@github.com:MFourMobile/mfour-node-sdk.git#${NODE_SDK_BRANCH}
 
       - run:
           # @important: currently dependency scripts do not work with yarn
