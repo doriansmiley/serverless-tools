@@ -14,7 +14,7 @@ jobs:
       - TEST_API_GATEWAY_PORT=3000
       - JWT_SECRET=anything
       - STAGE=local
-      - ALERT_EMAIL=dsmiley@mfour.com
+      - ALERT_EMAIL=your@email.com
 
     working_directory: ~/repo
 

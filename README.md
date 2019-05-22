@@ -1,10 +1,8 @@
-# mfour-serverless-tools
+# serverless-tools
 Tools and stub code for starting a new microservice using npm serverless, lamnda, node, and TypeScript
 
 <!-- 
 TODO: add badges
-# <a href="https://circleci.com/gh/MFourMobile/mfour-auto-complete-service">
-# <img src="https://circleci.com/gh/MFourMobile/mfour-auto-complete-service.svg?style=shield&circle-token=6ade52254f840a128823978162dd02efdde393f6" alt="Build Status"></a>
 -->
 ## Setup
 Be sure the latest versions of npm and node are installed. Also be sure NVM is installed and you install node version 8.10. This is a requirement of the lambda runtime. Then issue the following command from your working directory:
@@ -39,18 +37,6 @@ TODO: add sample for running integration tests
 ### Where to Go From Here
 
 Update your application readme. Then proceed to code out your controllers. Be sure to update the corresponding unit tests.
-
-### Using Yarn for Transitive Dependency Management
-You can use [yarn link](https://yarnpkg.com/lang/en/docs/cli/link/) to link dependencies.
-```bash
-cd ~/workspace/client-sdk && yarn link
-cd ~/workspace/mfour-node-sdk/ && yarn link && yarn link @mfourmobile/mfour-client-sdk
-cd ~/workspace/mfour-survey-service/ && yarn link @mfourmobile/mfour-client-sdk @mfourmobile/mfour-node-sdk
-```
-To remove linked dependencies use `yarn unlink`:
-```
-yarn unlink @mfourmobile/mfour-client-sdk
-```
 
 ### Offline Testing
 
