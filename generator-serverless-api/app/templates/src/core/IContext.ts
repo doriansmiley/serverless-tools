@@ -1,4 +1,4 @@
-import {IConfig} from "./IConfig";
+import {IConfig} from './IConfig';
 export interface IContext {
-    config: IConfig
+    config: IConfig;
 }

@@ -54,6 +54,7 @@ class MFourApiGenerator extends Generator {
                                     return 'The provided spec file constains an invalid api name. Please enter a valid api name. Must be <= '+SERVICE_NAME_MAX_LENGTH+' characters, no spaces, lowercase a-z characters and - or _ only.';
                                 }
                             } else {
+                                console.log(result.errors[0]);
                                 return 'The provided spec file is invalid! Please be sure it is an instance of Open API v3';
                             }
                         } catch (e) {
@@ -110,10 +111,34 @@ class MFourApiGenerator extends Generator {
             this.templatePath('automation'),
             this.destinationPath('automation')
         );
+        this.fs.copy(
+            this.templatePath('src/core'),
+            this.destinationPath('src/core')
+        );
+        this.fs.copy(
+            this.templatePath('src/error'),
+            this.destinationPath('src/error')
+        );
+        this.fs.copy(
+            this.templatePath('src/util'),
+            this.destinationPath('src/util')
+        );
+        this.fs.copy(
+            this.templatePath('src/controllers/IController.ts'),
+            this.destinationPath('src/controllers/IController.ts')
+        );
+        this.fs.copy(
+            this.templatePath('src/controllers/JWTController.ts'),
+            this.destinationPath('src/controllers/JWTController.ts')
+        );
+        this.fs.copy(
+            this.templatePath('src/controllers/XSSController.ts'),
+            this.destinationPath('src/controllers/XSSController.ts')
+        );
         // copy the abstract base controller
         this.fs.copyTpl(
-            this.templatePath('src/controllers/Controller.ts'),
-            this.destinationPath('src/controllers/Controller.ts'),
+            this.templatePath('src/controllers/AbstractController.ts'),
+            this.destinationPath('src/controllers/AbstractController.ts'),
             {
                 apiName: this.answers.apiName
             }

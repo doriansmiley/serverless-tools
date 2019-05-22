@@ -1,5 +1,5 @@
-import {IConfig} from "./IConfig";
-import {StringUtils} from "../util/StringUtils";
+import {IConfig} from './IConfig';
+import {StringUtils} from '../util/StringUtils';
 
 export class Config implements IConfig{
 

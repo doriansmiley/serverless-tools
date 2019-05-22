@@ -64,7 +64,7 @@ export class JWTController extends AbstractController {
         next();
     }
     // stub for override
-    protected getSegmentName(): string{
+    protected getSegmentName(): string {
         return 'JWTController';
     }
 }

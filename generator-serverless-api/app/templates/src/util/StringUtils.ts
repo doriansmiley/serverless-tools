@@ -11,14 +11,14 @@ export class StringUtils {
         if (!format || !values) {
             return format;
         }
-        let re = /\{\d+\}/;
+        const re = /\{\d+\}/;
         let output: string = format;
         for (let value of values) {
             output = output.replace(re, value);
         }
 
         if (output.match(/(\{|\})/)) {
-            throw new Error('format output malformed, either values are missing or input format string was not properly formatted')
+            throw new Error('format output malformed, either values are missing or input format string was not properly formatted');
         }
         return output;
     }
@@ -28,7 +28,7 @@ export class StringUtils {
      * @returns escaped string
      */
     public static escapeRegexChars(input: string): string {
-        let regex = /([\[\]\\^$.|?*+()])/g;
+        const regex = /([\[\]\\^$.|?*+()])/g;
         return input.replace(regex, '\\$&');
     }
 
@@ -50,7 +50,7 @@ export class StringUtils {
         }
 
         if (str.match(/(\{|\})/)) {
-            throw new Error('format output malformed, either values are missing or input format string was not properly formatted')
+            throw new Error('format output malformed, either values are missing or input format string was not properly formatted');
         }
 
         return str;

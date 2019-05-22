@@ -1,12 +1,12 @@
 import {ServiceError} from '../error/ServiceError';
 import {SecurityException} from '../error/SecurityException';
 import {LogLevels} from './AbstractController';
-import {IContext} from "../core/IContext";
+import {IContext} from '../core/IContext';
 import { validate, ValidationOptions, ValidationResult as JoiValidationResult } from 'joi';
 import * as express from 'express';
-import {Controller} from './Controller';
+import {AbstractController} from './AbstractController';
 
-export class <%- className %> extends Controller {
+export class <%- className %> extends AbstractController {
 
     constructor() {
         super();
@@ -45,12 +45,12 @@ export class <%- className %> extends Controller {
         return 'Update';
     }
 
-    protected getSchema(): object {
+    protected getSchema(): Object {
         // TODO: add you schema validation.
         // This is called by AbstractController.validate and is run against req.body
         // you can also override the AbstractController.getOptions which returns the schema options
         // for more information see joi validation and schema options
-        return object({
+        return Object({
             // id: string().required(),
             // someValue: string().required()
         });

@@ -1,7 +1,7 @@
 {
-  "name": "@mfourmobile/generator-serverless-api",
+  "name": "generator-serverless-api",
   "version": "1.0.3",
-  "description": "",
+  "description": "API generator for Open API 3.0",
   "files": [
     "app",
     "templates"
