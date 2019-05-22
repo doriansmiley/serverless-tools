@@ -13,7 +13,7 @@ nvm use node 8.10
 Install the code generator globally
 
 ```bash
-npm install -g @mfourmobile/generator-serverless-api
+npm install -g generator-serverless-api
 ```
 
 **Important!:** Make sure you are on the same nodejs runtime as lambda. Currently its on **_v8.10_**.
