@@ -87,11 +87,15 @@ export abstract class AbstractController extends PromiseResolver implements ICon
     protected validate(req: express.Request): JoiValidationResult<object> {
         const schema: Object = this.getSchema();
         const options: ValidationOptions = this.getOptions();
-        return validate<Object>(req.body, schema, options);
+        return validate<Object>(this.getValidationObject(req), schema, options);
     }
 
     protected getSchema(): object {
         return object({});
+    }
+
+    protected getValidationObject(req: express.Request): Object {
+        return (req.method === 'POST' || req.method === 'UPDATE' || req.method === 'PATCH') ? req.body : req.params;
     }
 
     protected getOptions(): ValidationOptions {
