@@ -8,6 +8,7 @@ import {PromiseResolver} from '../util/PromiseResolver';
 import {Config} from '../core/Config';
 import {IConfig} from '../core/IConfig';
 import {Context} from '../core/Context';
+import { object } from 'joi';
 
 export enum LogLevels {
     LOG = 'LOG',
@@ -89,8 +90,8 @@ export abstract class AbstractController extends PromiseResolver implements ICon
         return validate<Object>(req.body, schema, options);
     }
 
-    protected getSchema(): Object {
-        return {};
+    protected getSchema(): object {
+        return object({});
     }
 
     protected getOptions(): ValidationOptions {
