@@ -1,7 +1,7 @@
 import {IConfig} from './IConfig';
 import {StringUtils} from '../util/StringUtils';
 
-export class Config implements IConfig{
+export class Config implements IConfig {
 
     protected _serviceMap: Object = null; // hash to look up routes
 
@@ -16,7 +16,7 @@ export class Config implements IConfig{
     }
 
     protected init(): void {
-        //TODO: add your service maps, this is used for basic microservice discovery and resolution
+        // TODO: add your service maps, this is used for basic microservice discovery and resolution
         this._serviceMap = {
             /* example definition, note the use of route params
             someApi: {

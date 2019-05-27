@@ -34,7 +34,8 @@ export class LambdaPreDeployUtils {
         }).promise();
     }
 
-    protected async updateCodeDeployAsync(params: PutLifecycleEventHookExecutionStatusInput): Promise<PutLifecycleEventHookExecutionStatusOutput> {
+    protected async updateCodeDeployAsync(
+        params: PutLifecycleEventHookExecutionStatusInput): Promise<PutLifecycleEventHookExecutionStatusOutput> {
         return this.codedeploy.putLifecycleEventHookExecutionStatus(params).promise();
     }
 
