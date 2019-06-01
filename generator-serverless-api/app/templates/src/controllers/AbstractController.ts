@@ -66,6 +66,10 @@ export abstract class AbstractController extends PromiseResolver implements ICon
 
     public resolveServiceError(e: Error): ServiceError {
 
+        if (e instanceof ServiceError){
+            return e;
+        }
+
         let errorCode = 500;
 
         if (e instanceof RangeError) {
