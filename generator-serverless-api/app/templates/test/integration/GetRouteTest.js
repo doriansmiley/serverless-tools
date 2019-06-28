@@ -14,6 +14,7 @@ describe('GET /v1<%- route %>/:id', function() {
     const protocol = process.env.LOCAL_TESTING === '0' ? 'https:' : 'http:';
     const httpLib = IntegrationUtils.getHttpLib(host);
     const jwtSecret = process.env.JWT_SECRET;
+    const stage = (process.env.API_GATEWAY_STAGE) ? '/' + process.env.API_GATEWAY_STAGE : '';
 
     it('should return success response 200', function(done) {
         const id = '1234';
@@ -24,7 +25,7 @@ describe('GET /v1<%- route %>/:id', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: `/v1<%- route %>/${id}`,
+            path: `${stage}/v1<%- route %>/${id}`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `Bearer ${token}`
@@ -74,7 +75,7 @@ describe('GET /v1<%- route %>/:id', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: `/v1<%- route %>/${id}`,
+            path: `${stage}/v1<%- route %>/${id}`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `Bearer ${token}`
@@ -101,7 +102,7 @@ describe('GET /v1<%- route %>/:id', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: `/v1<%- route %>/${id}`,
+            path: `${stage}/v1<%- route %>/${id}`,
             headers: {
                 'Content-Type' : 'application/json'
             }
@@ -128,7 +129,7 @@ describe('GET /v1<%- route %>/:id', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: `/v1<%- route %>/${id}`,
+            path: `${stage}/v1<%- route %>/${id}`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `${token}`

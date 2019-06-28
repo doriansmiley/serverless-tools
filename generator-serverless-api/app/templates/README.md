@@ -87,6 +87,22 @@ serverless offline start --stage local \
 
 Your service will be accessible on `localhost:3000`.
 
+## API Gateway Permissions
+
+IMPORTANT: Before you deploy read: https://forum.serverless.com/t/knowledge-sharing-enable-cloud-watch-logs-for-api-gateway-using-serverless/3287
+
+You need to manually setup permissions in API Gateway to allow it to push to CloudWatch logs.
+Be sure to go through the steps to setup the `apigateway-cloudwatch-logs-role` and attach
+to API Gateway settings. ONLY SET UP THE ROLE. The API is already configured with the required plugin.
+
+## API Gateway Stage Variables
+
+IMPORTANT: if you have not setup a custom domain for your API then 
+you must set the `API_GATEWAY_STAGE` variable! For example:
+```
+export API_GATEWAY_STAGE=dev
+```
+
 ## Deployment
 
 We deploy to AWS using serverless directly. You will need the AWS Credentials setup on your machine. Check with DevOps if you need help with this
