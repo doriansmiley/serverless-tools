@@ -233,7 +233,7 @@ describe('POST /v1<%- route %>', function() {
                 'authorization' : `Bearer ${token}`
             }
         };
-        const req = http.request(options, function (res) {
+        const req = httpLib.request(options, function (res) {
             var data = [];
 
             res.on('data', function (chunk) {
