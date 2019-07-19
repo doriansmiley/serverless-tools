@@ -1,7 +1,6 @@
-import {IConfig} from './IConfig';
 import {StringUtils} from '../util/StringUtils';
 
-export class Config implements IConfig {
+export class Config {
 
     protected _serviceMap: object = null; // hash to look up routes
 
@@ -11,7 +10,7 @@ export class Config implements IConfig {
     // used for assigning a concrete service implementation. Must be in the form: /v + version number. for example: /v1
     public serviceCode: string = null;
 
-    constructor() {
+    public constructor() {
         this.init();
     }
 
@@ -25,10 +24,7 @@ export class Config implements IConfig {
                 create:  '/noun',
                 update: '/noun',
                 delete: '/noun/{0}',
-                read: '/noun/{0}',
-                getInstance: '/noun/instances/{0}/{1}/{2}',
-                updateInstance: '/noun/instances',
-                evaluateExpression: '/noun/expressions/{0}/{1}'
+                read: '/noun/{0}/{1}/{2}'
             }
             */
         };
@@ -39,11 +35,11 @@ export class Config implements IConfig {
         return this._serviceMap;
     }
 
-    public getURLWithParams(serviceName: string, route: string, args?: Array<string>): string {
+    public getURLWithParams(serviceName: string, route: string, args?: string[]): string {
         return this.serviceCode + StringUtils.substitute(this.serviceMap[serviceName][route], args);
     }
 
-    public getAbsoluteURLWithParams(serviceName: string, route: string, args?: Array<string>): string {
+    public getAbsoluteURLWithParams(serviceName: string, route: string, args?: string[]): string {
         let baseURL: string = this.serviceMap[serviceName]['baseURL'];
         if (this.serviceMap[serviceName]['port']) {
             baseURL += ':' + this.serviceMap[serviceName]['port'];

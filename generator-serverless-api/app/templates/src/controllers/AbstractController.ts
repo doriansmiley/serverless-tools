@@ -4,9 +4,7 @@ import * as AWSXRay from 'aws-xray-sdk';
 import {validate, ValidationOptions, ValidationResult as JoiValidationResult} from 'joi';
 import {ServiceError} from '../error/ServiceError';
 import {UuidUtils} from '../util/UuidUtils';
-import {PromiseResolver} from '../util/PromiseResolver';
 import {Config} from '../core/Config';
-import {IConfig} from '../core/IConfig';
 import {Context} from '../core/Context';
 import { object } from 'joi';
 
@@ -17,29 +15,26 @@ export enum LogLevels {
     ERROR = 'ERROR'
 }
 
-export abstract class AbstractController extends PromiseResolver implements Controller {
+export abstract class AbstractController implements Controller {
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
         // log request recieved
         this.log(LogLevels.INFO, 'Request recieved', null, req);
-
-        return new Promise<object>((resolve, reject) => {
-            try {
-                // first validate the incoming request.
-                const vResult = this.validate(req);
-                if (vResult.error !== null) {
-                    this.log(LogLevels.ERROR, vResult.error.message, null, req, vResult.error);
-                    return this.resolvePromise(null, resolve, reject, new Error(vResult.error.message), null);
-                }
-
-                // stub for override
-                // in your sub classes you should supply value for result and error
-                this.resolvePromise(null, resolve, reject, null, null);
-            } catch (e) {
-                // log error response
-                this.log(LogLevels.ERROR, e.message, null, req, e);
-                return this.resolvePromise(null, resolve, reject, e, null);
+        try {
+            // first validate the incoming request.
+            const vResult = this.validate(req);
+            if (vResult.error !== null) {
+                this.log(LogLevels.ERROR, vResult.error.message, null, req, vResult.error);
+                throw new Error(vResult.error.message);
             }
-        });
+
+            // stub for override
+            // in your sub classes you should supply value for result and error
+            return null;
+        } catch (e) {
+            // log error response
+            this.log(LogLevels.ERROR, e.message, null, req, e);
+            throw e;
+        }
     }
 
     protected checkValidation(req: express.Request): ServiceError {
@@ -54,10 +49,8 @@ export abstract class AbstractController extends PromiseResolver implements Cont
     }
 
     protected createContext(): Context {
-        // create context
-        const config: IConfig = new Config();
 
-        return new Context(config);
+        return new Context(new Config());
     }
 
     protected generateTermGUID(): string {

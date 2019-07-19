@@ -1,5 +1,5 @@
 export class UuidUtils {
-    constructor() {
+    public constructor() {
 
     }
 

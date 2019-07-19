@@ -4,7 +4,7 @@ export class SecurityException extends Error {
 
     public concreteSecurityException: Error = null;
 
-    constructor(message: string, error: Error = null) {
+    public constructor(message: string, error: Error = null) {
         super(message);
 
         this.concreteSecurityException = error;

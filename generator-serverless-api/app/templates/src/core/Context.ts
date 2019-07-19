@@ -1,19 +1,18 @@
-import {IContext} from './IContext';
-import {IConfig} from './IConfig';
+import {Config} from './Config';
 
 /*
 * The Context class is used to sandbox individual requests. It can be expanded to include things like
 * injectors, a central event bus, command mapping, etc
 * */
-export class Context implements IContext {
-    private _config: IConfig;
+export class Context {
+    private _config: Config;
 
-    constructor (config: IConfig) {
+    public constructor (config: Config) {
         this._config = config;
     }
 
 
-    get config(): IConfig {
+    public get config(): Config {
         return this._config;
     }
 }

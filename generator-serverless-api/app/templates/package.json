@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && cp Globals.js dist",
-    "test": "npm run lint && npm run build && npm run unit-test && npm run integration-test",
+    "test": "npm run build && npm run lint && npm run unit-test && npm run integration-test",
     "lint": "eslint --quiet src/**/**.ts",
     "unit-test": "bash ./test/unit/test.sh",
     "integration-test": "bash ./test/integration/test.sh",

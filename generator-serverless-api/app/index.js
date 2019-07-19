@@ -124,8 +124,8 @@ class MFourApiGenerator extends Generator {
             this.destinationPath('src/util')
         );
         this.fs.copy(
-            this.templatePath('src/controllers/Controller.ts),
-            this.destinationPath('src/controllers/Controllerts')
+            this.templatePath('src/controllers/Controller.ts'),
+            this.destinationPath('src/controllers/Controller.ts')
         );
         this.fs.copy(
             this.templatePath('src/controllers/JWTController.ts'),

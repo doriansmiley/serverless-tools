@@ -17,7 +17,7 @@ export class LambdaPreDeployUtils {
 
     protected codedeploy: AWS.CodeDeploy = null;
 
-    constructor(lambda: AWS.Lambda, codedeploy: AWS.CodeDeploy) {
+    public constructor(lambda: AWS.Lambda, codedeploy: AWS.CodeDeploy) {
         this.lambda = lambda;
         this.codedeploy = codedeploy;
     }
@@ -39,10 +39,7 @@ export class LambdaPreDeployUtils {
         return this.codedeploy.putLifecycleEventHookExecutionStatus(params).promise();
     }
 
-    public async invoke(functionName: string,
-                        payload: any = {},
-                        expectedStatusCode: number = 200,
-                        expectedBody: string = ''): Promise<TestResultEnum> {
+    public async invoke(functionName: string, payload: any = {}, expectedStatusCode: number = 200, expectedBody: string = ''): Promise<TestResultEnum> {
         try {
             const response = await this.invokeAsync(functionName, JSON.stringify(payload));
             console.log('[INFO] ' + functionName + ' ' + response.StatusCode + ' ' + response.Payload.toString());
@@ -60,9 +57,7 @@ export class LambdaPreDeployUtils {
         return TestResultEnum.Failed;
     }
 
-    public async updateCodeDeploy(deploymentId: DeploymentId,
-                                  executionId: LifecycleEventHookExecutionId,
-                                  status: TestResultEnum): Promise<void> {
+    public async updateCodeDeploy(deploymentId: DeploymentId, executionId: LifecycleEventHookExecutionId, status: TestResultEnum): Promise<void> {
 
         const params: PutLifecycleEventHookExecutionStatusInput = {
             deploymentId: deploymentId,

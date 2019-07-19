@@ -7,7 +7,7 @@ export class StringUtils {
      *
      * @returns formatted output
      */
-    public static format(format: string, values: Array<string>): string {
+    public static format(format: string, values: string[]): string {
         if (!format || !values) {
             return format;
         }
@@ -40,7 +40,7 @@ export class StringUtils {
      *
      * @returns formatted output
      */
-    public static substitute(str: string, args: Array<string>): string {
+    public static substitute(str: string, args: string[]): string {
         if (!str || !args) {
             return str;
         }
