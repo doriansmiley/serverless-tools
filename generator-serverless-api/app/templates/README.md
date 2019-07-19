@@ -17,7 +17,11 @@ You will need npm to manage packages
 ```bash
 npm install npm -g
 ```
-
+You will need eslint installed globally
+```bash
+npm install eslint -g
+```
+Then install npm packages.
 ```bash
 npm install
 ```
@@ -28,7 +32,7 @@ Global npm packages are optional but recommended
 npm install grunt serverless -g
 ```
 
-**Important!:** Make sure you are on the same nodejs runtime as lambda. Currently its on **_v8.10_**.
+**Important!:** Make sure you are on the same nodejs runtime as lambda. Currently its on **_v10_**.
 
 ### Environment Variables
 
