@@ -3,7 +3,7 @@ import {StringUtils} from '../util/StringUtils';
 
 export class Config implements IConfig {
 
-    protected _serviceMap: Object = null; // hash to look up routes
+    protected _serviceMap: object = null; // hash to look up routes
 
     public baseUrl: string; // base http address of application ie http://localhost:3000. Note DO NOT include the trailing /.
     public webRoot: string = ''; // path relative to webroot where the application is deployed
@@ -35,7 +35,7 @@ export class Config implements IConfig {
         this.serviceCode = '/v1';
     }
 
-    public get serviceMap(): Object {
+    public get serviceMap(): object {
         return this._serviceMap;
     }
 

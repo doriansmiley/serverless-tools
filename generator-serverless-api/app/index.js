@@ -124,8 +124,8 @@ class MFourApiGenerator extends Generator {
             this.destinationPath('src/util')
         );
         this.fs.copy(
-            this.templatePath('src/controllers/IController.ts'),
-            this.destinationPath('src/controllers/IController.ts')
+            this.templatePath('src/controllers/Controller.ts),
+            this.destinationPath('src/controllers/Controllerts')
         );
         this.fs.copy(
             this.templatePath('src/controllers/JWTController.ts'),
@@ -295,8 +295,8 @@ class MFourApiGenerator extends Generator {
             this.destinationPath('package.json')
         );
         this.fs.copy(
-            this.templatePath('tslint.json'),
-            this.destinationPath('tslint.json')
+            this.templatePath('.eslintrc.js'),
+            this.destinationPath('.eslintrc.js')
         );
         this.fs.copyTpl(
             this.templatePath('README.md'),

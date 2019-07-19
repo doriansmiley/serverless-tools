@@ -8,7 +8,7 @@ import {AbstractController} from './AbstractController';
 
 export class <%- className %> extends AbstractController {
 
-    constructor() {
+    public constructor() {
         super();
     }
 
@@ -36,8 +36,8 @@ export class <%- className %> extends AbstractController {
                 tmp: 'someValue'
             };
         } catch (e) {
-                throw this.resolveServiceError(e);
-            }
+            throw this.resolveServiceError(e);
+        }
     }
 
     // This function should match route route controller's http verb

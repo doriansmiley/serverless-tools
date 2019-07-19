@@ -8,7 +8,7 @@ export class XSSController extends AbstractController {
 
     protected readonly xssConfig: object = {};
 
-    constructor(xssConfig: object = {}) {
+    public constructor(xssConfig: object = {}) {
         super();
         this.xssConfig = xssConfig;
     }

@@ -3,7 +3,7 @@ export interface IConfig {
     webRoot: string; // path relative to webroot where the application is deployed
     token: string; // used for oAuth authentication schemes and similar token based authentication systems
     serviceCode: string; // used for assigning a concrete service implementation
-    serviceMap: Object; // hash to look up routes
+    serviceMap: object; // hash to look up routes
     getURLWithParams(serviceName: string, route: string, args?: Array<string>): string;
     getAbsoluteURLWithParams(serviceName: string, route: string, args?: Array<string>): string;
 }

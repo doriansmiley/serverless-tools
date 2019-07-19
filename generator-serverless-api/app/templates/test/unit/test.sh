@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run tests
-grunt --dbug --stack tslint mochaTest:unitTest
+grunt --dbug --stack mochaTest:unitTest
 MOCHA_RESULT=$?
 
 # wait for data to be written to the stream

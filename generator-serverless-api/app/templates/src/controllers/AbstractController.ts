@@ -1,4 +1,4 @@
-import {IController} from './IController';
+import {Controller} from './Controller';
 import * as express from 'express';
 import * as AWSXRay from 'aws-xray-sdk';
 import {validate, ValidationOptions, ValidationResult as JoiValidationResult} from 'joi';
@@ -17,7 +17,7 @@ export enum LogLevels {
     ERROR = 'ERROR'
 }
 
-export abstract class AbstractController extends PromiseResolver implements IController {
+export abstract class AbstractController extends PromiseResolver implements Controller {
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
         // log request recieved
         this.log(LogLevels.INFO, 'Request recieved', null, req);
@@ -66,7 +66,7 @@ export abstract class AbstractController extends PromiseResolver implements ICon
 
     public resolveServiceError(e: Error): ServiceError {
 
-        if (e instanceof ServiceError){
+        if (e instanceof ServiceError) {
             return e;
         }
 
@@ -89,16 +89,16 @@ export abstract class AbstractController extends PromiseResolver implements ICon
 
     // validate the payload
     protected validate(req: express.Request): JoiValidationResult<object> {
-        const schema: Object = this.getSchema();
+        const schema: object = this.getSchema();
         const options: ValidationOptions = this.getOptions();
-        return validate<Object>(this.getValidationObject(req), schema, options);
+        return validate<object>(this.getValidationobject(req), schema, options);
     }
 
     protected getSchema(): object {
         return object({});
     }
 
-    protected getValidationObject(req: express.Request): Object {
+    protected getValidationobject(req: express.Request): object {
         return (req.method === 'POST' || req.method === 'UPDATE' || req.method === 'PATCH') ? req.body : req.params;
     }
 
@@ -113,11 +113,7 @@ export abstract class AbstractController extends PromiseResolver implements ICon
         res.json(result);
     }
 
-    protected log(level: LogLevels,
-                  message: string,
-                  data: Object = null,
-                  request: express.Request = null,
-                  error: Error = null): void {
+    protected log(level: LogLevels, message: string, data: object = null, request: express.Request = null, error: Error = null): void {
         console.log({
             logLevel: level,
             message: message,
@@ -151,7 +147,7 @@ export abstract class AbstractController extends PromiseResolver implements ICon
             req['id'] = (!req.hasOwnProperty('id')) ? UuidUtils.generateUUID() : req['id'];
             AWSXRay.captureAsyncFunc(this.getSegmentName(), (subsegment) => {
                 this.processRequest(req, res)
-                    .then((result: Object) => {
+                    .then((result: object) => {
                         this.next(req, res, next, result);
                         subsegment.close();
                     })
