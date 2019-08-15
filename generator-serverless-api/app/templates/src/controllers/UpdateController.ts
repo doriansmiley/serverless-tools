@@ -14,9 +14,8 @@ export class <%- className %> extends AbstractController {
 
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
         try {
-            // TODO: pass debug instance as a log function once AbstractController is refactored
-            this.log(LogLevels.INFO, '<%- className %> Request received', null, req);
-            this.log(LogLevels.INFO, '<%- className %>.processRequest: ' + JSON.stringify(req.body));
+            // log request received
+            await super.processRequest(req, res);
 
             // first validate the incoming request
             const error: ServiceError = this.checkValidation(req);

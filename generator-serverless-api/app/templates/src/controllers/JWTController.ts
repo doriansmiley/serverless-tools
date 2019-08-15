@@ -5,8 +5,8 @@ import {ServiceError} from '../error/ServiceError';
 
 export class JWTController extends AbstractController {
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
-        // log request recieved
-        this.log(LogLevels.INFO, 'Request recieved', null, req);
+        // log request received
+        await super.processRequest(req, res);
 
         let header: string = process.env.JWT_HEADER || 'authorization';
         header = header.toLowerCase();

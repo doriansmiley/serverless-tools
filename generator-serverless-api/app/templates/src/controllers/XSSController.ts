@@ -14,8 +14,8 @@ export class XSSController extends AbstractController {
     }
 
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
-        // log request recieved
-        this.log(LogLevels.INFO, 'Request recieved', null, req);
+        // log request received
+        await super.processRequest(req, res);
 
         try {
             const xss = new FilterXSS(this.xssConfig);

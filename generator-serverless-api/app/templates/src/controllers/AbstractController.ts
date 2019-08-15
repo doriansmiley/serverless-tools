@@ -1,4 +1,3 @@
-import {Controller} from './Controller';
 import * as express from 'express';
 import * as AWSXRay from 'aws-xray-sdk';
 import {validate, ValidationOptions, ValidationResult as JoiValidationResult} from 'joi';
@@ -15,17 +14,14 @@ export enum LogLevels {
     ERROR = 'ERROR'
 }
 
-export abstract class AbstractController implements Controller {
+export abstract class AbstractController {
+
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
-        // log request recieved
-        this.log(LogLevels.INFO, 'Request recieved', null, req);
+        // log request received
+        this.log(LogLevels.INFO, this.getSegmentName() + ' Request received', null, req);
         try {
             // first validate the incoming request.
-            const vResult = this.validate(req);
-            if (vResult.error !== null) {
-                this.log(LogLevels.ERROR, vResult.error.message, null, req, vResult.error);
-                throw new Error(vResult.error.message);
-            }
+            this.checkValidation(req);
 
             // stub for override
             // in your sub classes you should supply value for result and error
@@ -43,7 +39,7 @@ export abstract class AbstractController implements Controller {
         if (vResult.error !== null) {
             const error = new ServiceError(vResult.error.message, 400);
             this.log(LogLevels.ERROR, vResult.error.message, null, req, error);
-            return error;
+            throw error;
         }
         return null;
     }
