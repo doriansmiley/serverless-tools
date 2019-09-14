@@ -88,7 +88,7 @@ export abstract class AbstractController {
     }
 
     protected getValidationobject(req: express.Request): object {
-        return (req.method === 'POST' || req.method === 'UPDATE' || req.method === 'PATCH') ? req.body : req.params;
+        return (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') ? req.body : req.params;
     }
 
     protected getOptions(): ValidationOptions {
