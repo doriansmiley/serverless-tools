@@ -34,6 +34,13 @@ npm test
 ````
 TODO: add sample for running integration tests
 
+## Docs
+Once the API is started the docs can be served at /docs/index
+
+## Health Check
+The default route (/) contains a health check message.
+You can create a controller top perform deep health checks if you want.
+
 ### Where to Go From Here
 
 Update your application readme. Then proceed to code out your controllers. Be sure to update the corresponding unit tests.
