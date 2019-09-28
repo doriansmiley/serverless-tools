@@ -1,31 +1,24 @@
 import {ServiceError} from '../error/ServiceError';
 import {SecurityException} from '../error/SecurityException';
 import {LogLevels} from './AbstractController';
-import {IContext} from '../core/IContext';
+import {Context} from '../core/Context';
 import { validate, ValidationOptions, ValidationResult as JoiValidationResult, object } from 'joi';
 import * as express from 'express';
 import {AbstractController} from './AbstractController';
 
 export class <%- className %> extends AbstractController {
 
-    constructor() {
+    public constructor() {
         super();
     }
 
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
         try {
-            // TODO: pass debug instance as a log function once AbstractController is refactored
-            this.log(LogLevels.INFO, '<%- className %> Request received', null, req);
-            this.log(LogLevels.INFO, '<%- className %>.processRequest: ' + JSON.stringify(req.body));
-
-            // first validate the incoming request
-            const error: ServiceError = this.checkValidation(req);
-            if (error !== null ) {
-                throw error;
-            }
+            // log request received
+            await super.processRequest(req, res);
 
             // create context
-            const context: IContext = this.createContext();
+            const context: Context = this.createContext();
 
             // TODO: code out your controller logic, be sure to pass context to your business objects.
             // This makes your code threadsafe when accessing service objects
@@ -36,8 +29,8 @@ export class <%- className %> extends AbstractController {
                 tmp: 'someValue'
             };
         } catch (e) {
-                throw this.resolveServiceError(e);
-            }
+            throw this.resolveServiceError(e);
+        }
     }
 
     // This function should match route route controller's http verb

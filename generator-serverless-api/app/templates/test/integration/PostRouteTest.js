@@ -10,6 +10,7 @@ describe('POST /v1<%- route %>', function() {
     const protocol = process.env.LOCAL_TESTING === '0' ? 'https:' : 'http:';
     const httpLib = IntegrationUtils.getHttpLib(host);
     const jwtSecret = process.env.JWT_SECRET;
+    const stage = (process.env.API_GATEWAY_STAGE) ? '/' + process.env.API_GATEWAY_STAGE : '';
 
     it('should return success response 200', function(done) {
         // TODO: refactor these tests once business logic is implemented in your controllers
@@ -31,7 +32,7 @@ describe('POST /v1<%- route %>', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: '/v1<%- route %>',
+            path: `${stage}/v1<%- route %>`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `Bearer ${token}`
@@ -91,7 +92,7 @@ describe('POST /v1<%- route %>', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: '/v1<%- route %>',
+            path: `${stage}/v1<%- route %>`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `Bearer ${token}`
@@ -129,7 +130,7 @@ describe('POST /v1<%- route %>', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: '/v1<%- route %>',
+            path: `${stage}/v1<%- route %>`,
             headers: {
                 'Content-Type' : 'application/json'
             }
@@ -166,7 +167,7 @@ describe('POST /v1<%- route %>', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: '/v1<%- route %>',
+            path: `${stage}/v1<%- route %>`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `${token}`
@@ -222,13 +223,13 @@ describe('POST /v1<%- route %>', function() {
             host: host,
             port: port,
             protocol: protocol,
-            path: '/v1<%- route %>',
+            path: `${stage}/v1<%- route %>`,
             headers: {
                 'Content-Type' : 'application/json',
                 'authorization' : `Bearer ${token}`
             }
         };
-        const req = http.request(options, function (res) {
+        const req = httpLib.request(options, function (res) {
             var data = [];
 
             res.on('data', function (chunk) {

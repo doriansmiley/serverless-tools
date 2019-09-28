@@ -1,12 +1,9 @@
-import {IController} from './IController';
 import * as express from 'express';
 import * as AWSXRay from 'aws-xray-sdk';
 import {validate, ValidationOptions, ValidationResult as JoiValidationResult} from 'joi';
 import {ServiceError} from '../error/ServiceError';
 import {UuidUtils} from '../util/UuidUtils';
-import {PromiseResolver} from '../util/PromiseResolver';
 import {Config} from '../core/Config';
-import {IConfig} from '../core/IConfig';
 import {Context} from '../core/Context';
 import { object } from 'joi';
 
@@ -17,29 +14,23 @@ export enum LogLevels {
     ERROR = 'ERROR'
 }
 
-export abstract class AbstractController extends PromiseResolver implements IController {
+export abstract class AbstractController {
+
     protected async processRequest(req: express.Request, res: express.Response): Promise<any> {
-        // log request recieved
-        this.log(LogLevels.INFO, 'Request recieved', null, req);
+        // log request received
+        this.log(LogLevels.INFO, this.getSegmentName() + ' Request received', null, req);
+        try {
+            // first validate the incoming request.
+            this.checkValidation(req);
 
-        return new Promise<object>((resolve, reject) => {
-            try {
-                // first validate the incoming request.
-                const vResult = this.validate(req);
-                if (vResult.error !== null) {
-                    this.log(LogLevels.ERROR, vResult.error.message, null, req, vResult.error);
-                    return this.resolvePromise(null, resolve, reject, new Error(vResult.error.message), null);
-                }
-
-                // stub for override
-                // in your sub classes you should supply value for result and error
-                this.resolvePromise(null, resolve, reject, null, null);
-            } catch (e) {
-                // log error response
-                this.log(LogLevels.ERROR, e.message, null, req, e);
-                return this.resolvePromise(null, resolve, reject, e, null);
-            }
-        });
+            // stub for override
+            // in your sub classes you should supply value for result and error
+            return null;
+        } catch (e) {
+            // log error response
+            this.log(LogLevels.ERROR, e.message, null, req, e);
+            throw e;
+        }
     }
 
     protected checkValidation(req: express.Request): ServiceError {
@@ -48,16 +39,14 @@ export abstract class AbstractController extends PromiseResolver implements ICon
         if (vResult.error !== null) {
             const error = new ServiceError(vResult.error.message, 400);
             this.log(LogLevels.ERROR, vResult.error.message, null, req, error);
-            return error;
+            throw error;
         }
         return null;
     }
 
     protected createContext(): Context {
-        // create context
-        const config: IConfig = new Config();
 
-        return new Context(config);
+        return new Context(new Config());
     }
 
     protected generateTermGUID(): string {
@@ -66,7 +55,7 @@ export abstract class AbstractController extends PromiseResolver implements ICon
 
     public resolveServiceError(e: Error): ServiceError {
 
-        if (e instanceof ServiceError){
+        if (e instanceof ServiceError) {
             return e;
         }
 
@@ -89,17 +78,17 @@ export abstract class AbstractController extends PromiseResolver implements ICon
 
     // validate the payload
     protected validate(req: express.Request): JoiValidationResult<object> {
-        const schema: Object = this.getSchema();
+        const schema: object = this.getSchema();
         const options: ValidationOptions = this.getOptions();
-        return validate<Object>(this.getValidationObject(req), schema, options);
+        return validate<object>(this.getValidationobject(req), schema, options);
     }
 
     protected getSchema(): object {
         return object({});
     }
 
-    protected getValidationObject(req: express.Request): Object {
-        return (req.method === 'POST' || req.method === 'UPDATE' || req.method === 'PATCH') ? req.body : req.params;
+    protected getValidationobject(req: express.Request): object {
+        return (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') ? req.body : req.params;
     }
 
     protected getOptions(): ValidationOptions {
@@ -113,11 +102,7 @@ export abstract class AbstractController extends PromiseResolver implements ICon
         res.json(result);
     }
 
-    protected log(level: LogLevels,
-                  message: string,
-                  data: Object = null,
-                  request: express.Request = null,
-                  error: Error = null): void {
+    protected log(level: LogLevels, message: string, data: object = null, request: express.Request = null, error: Error = null): void {
         console.log({
             logLevel: level,
             message: message,
@@ -151,7 +136,7 @@ export abstract class AbstractController extends PromiseResolver implements ICon
             req['id'] = (!req.hasOwnProperty('id')) ? UuidUtils.generateUUID() : req['id'];
             AWSXRay.captureAsyncFunc(this.getSegmentName(), (subsegment) => {
                 this.processRequest(req, res)
-                    .then((result: Object) => {
+                    .then((result: object) => {
                         this.next(req, res, next, result);
                         subsegment.close();
                     })

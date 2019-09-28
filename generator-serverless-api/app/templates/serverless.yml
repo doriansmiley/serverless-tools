@@ -12,22 +12,14 @@ custom:
     # I have opened an issue here to address: https://github.com/FidelLimited/serverless-plugin-warmup/issues/85
     # If it ever gets resolved we can comment the code in and get rid of our hacks.
     warmup:
-      enabled: true # Whether to warm up functions by default or not
       folderName: '_warmup' # Name of the folder created for the generated warmup
       cleanFolder: false
       memorySize: 256
-      role: lambdaWarmUpRole
-      tags:
-        Project: foo
-        Owner: bar
       vpc: true
       events:
-        - schedule: 'cron(0/5 8-17 ? * MON-FRI *)' # Run WarmUp every 5 minutes Mon-Fri between 8:00am and 5:55pm (UTC)
+        - schedule: 'cron(0/1 8-17 ? * MON-FRI *)' # Run WarmUp every 5 minutes Mon-Fri between 8:00am and 5:55pm (UTC)
       timeout: 20
       prewarm: true # Run WarmUp immediately after a deploymentlambda
-      payload:
-        source: my-custom-source
-        other: 20
       concurrency: 5 # Warm up 5 concurrent instances
     alerts:
       topics:
@@ -53,11 +45,11 @@ plugins:
 provider:
     name: aws
     runtime: nodejs8.10
-    stage: dev
+    stage: ${opt:stage}
     memorySize: 512
     tracing: true
-    region: us-west-2
-    profile: serverless
+    region: ${opt:region}
+    profile: ${opt:profile}
     environment:
         API_VERSION: '${self:custom.version}'
         APP_NAME: '${self:custom.appName}'
@@ -121,11 +113,7 @@ functions:
                       - Content-Type
                       - Authorization
                       - x-amzn-trace-id
-        warmup:
-            enabled:
-              - dev
-              - staging
-              - prod
+        warmup: true
         environment:
             STAGE: ${opt:stage}
             JWT_SECRET: ${opt:jwt-secret}

@@ -1,28 +1,12 @@
 module.exports = function(grunt) {
 
-    // Add the grunt-mocha-test tasks.
+    // Add the grunt-mocha-test and eslint tasks.
     grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks("grunt-tslint");
 
     grunt.initConfig({
-        // configure linter
-        tslint: {
-            options: {
-                // can be a configuration object or a filepath to tslint.json
-                configuration: "tslint.json",
-                // If set to true, tslint errors will be reported, but not fail the task
-                // If set to false, tslint errors will be reported, and the task will fail
-                force: true,
-                fix: false
-            },
-            files: {
-                src: [
-                    "src/**/*.ts",
-                ]
-            }
-        },
         // Configure a mochaTest task
         mochaTest: {
+            // configure linter
             unitTest: {
                 options: {
                     reporter: 'spec',
@@ -104,6 +88,6 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', 'mochaTest');
+    grunt.registerTask('default', ['mochaTest']);
 
 };

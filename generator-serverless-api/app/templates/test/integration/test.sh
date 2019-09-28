@@ -52,7 +52,7 @@ if [ "$LOCAL_TESTING" = "1" ]; then
 fi
 
 # run tests
-grunt --dbug --stack tslint mochaTest:integrationTest
+grunt --dbug --stack mochaTest:integrationTest
 MOCHA_RESULT=$?
 
 # wait for data to be written to the stream

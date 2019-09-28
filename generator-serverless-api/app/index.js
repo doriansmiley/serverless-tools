@@ -124,10 +124,6 @@ class ApiGenerator extends Generator {
             this.destinationPath('src/util')
         );
         this.fs.copy(
-            this.templatePath('src/controllers/IController.ts'),
-            this.destinationPath('src/controllers/IController.ts')
-        );
-        this.fs.copy(
             this.templatePath('src/controllers/JWTController.ts'),
             this.destinationPath('src/controllers/JWTController.ts')
         );
@@ -291,8 +287,8 @@ class ApiGenerator extends Generator {
             this.destinationPath('package.json')
         );
         this.fs.copy(
-            this.templatePath('tslint.json'),
-            this.destinationPath('tslint.json')
+            this.templatePath('.eslintrc.js'),
+            this.destinationPath('.eslintrc.js')
         );
         this.fs.copyTpl(
             this.templatePath('README.md'),
