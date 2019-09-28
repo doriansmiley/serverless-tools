@@ -57,7 +57,7 @@
     "lambda-local": "^1.5.1",
     "mocha": "^5.0.5",
     "rxjs": "^6.5.1",
-    "serverless-offline": "^3.27.0",
+    "serverless-offline": "^5.11.0",
     "serverless-plugin-aws-alerts": "^1.2.4",
     "serverless-plugin-bind-deployment-id": "^1.0.1",
     "serverless-plugin-stage-variables": "^1.8.0",
