@@ -6,7 +6,7 @@ let path = require('path')
 const OpenAPISchemaValidator = require('openapi-schema-validator').default;
 const SERVICE_NAME_MAX_LENGTH = 20;
 
-class MFourApiGenerator extends Generator {
+class ApiGenerator extends Generator {
     // The name `constructor` is important here
     constructor(args, opts) {
         // Calling the super constructor is important so our generator is correctly set up
@@ -265,10 +265,6 @@ class MFourApiGenerator extends Generator {
             this.destinationPath('.gitignore')
         );
         this.fs.copy(
-            this.templatePath('Globals.js'),
-            this.destinationPath('Globals.js')
-        );
-        this.fs.copy(
             this.templatePath('Gruntfile.js'),
             this.destinationPath('Gruntfile.js')
         );
@@ -337,4 +333,4 @@ class MFourApiGenerator extends Generator {
     }
 }
 
-module.exports = MFourApiGenerator;
+module.exports = ApiGenerator;

@@ -4,7 +4,7 @@
   "description": "Stub API",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp Globals.js dist",
+    "build": "tsc",
     "test": "npm run build && npm run unit-test && npm run integration-test",
     "unit-test": "bash ./test/unit/test.sh",
     "integration-test": "bash ./test/integration/test.sh",

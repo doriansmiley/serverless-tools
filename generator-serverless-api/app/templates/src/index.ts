@@ -1,6 +1,3 @@
-// must occur first!!! Our client SDK requires global window object and DOM objects
-import * as global from '../Globals.js';
-global();
 // load the rest of the modules
 const serverless = require('serverless-http');
 import * as bodyParser from 'body-parser';

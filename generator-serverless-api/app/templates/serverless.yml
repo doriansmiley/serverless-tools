@@ -106,7 +106,6 @@ package:
         - .npmignore
         - tsconfig.json
     include:
-        - 'Globals.js'
         - 'apiSpec.json'
 functions:
 <% routes.forEach(function(route){ %>

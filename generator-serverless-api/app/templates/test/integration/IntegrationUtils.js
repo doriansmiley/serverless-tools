@@ -1,9 +1,4 @@
 'use strict';
-
-//must occur first!!! Our client SDK requires global window object and DOM objects
-// @IMPORTANT: allows us to include the MFour Client SDK for tests
-let globalFunction = require('../../Globals.js');
-globalFunction();
 const jwt = require('jsonwebtoken');
 let util = require('util');
 const http = require('http');
