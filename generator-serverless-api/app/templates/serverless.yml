@@ -100,6 +100,50 @@ package:
     include:
         - 'apiSpec.json'
 functions:
+    HealthCheck:
+      handler: src/index.handler
+      events:
+        - http:
+            path: /
+            method: get
+            cors:
+              origin: '*'
+              headers:
+                - Content-Type
+                - Authorization
+                - x-amzn-trace-id
+      warmup: true
+      environment:
+        STAGE: ${opt:stage}
+        JWT_SECRET: ${opt:jwt-secret}
+      vpc:
+        securityGroupIds:
+          - ${opt:vpc-security-group}
+        subnetIds:
+          - ${opt:vpc-subnet-a}
+          - ${opt:vpc-subnet-b}
+    Docs:
+      handler: src/index.handler
+      events:
+        - http:
+            path: /docs/{proxy+}
+            method: get
+            cors:
+              origin: '*'
+              headers:
+                - Content-Type
+                - Authorization
+                - x-amzn-trace-id
+      warmup: true
+      environment:
+        STAGE: ${opt:stage}
+        JWT_SECRET: ${opt:jwt-secret}
+      vpc:
+        securityGroupIds:
+          - ${opt:vpc-security-group}
+        subnetIds:
+          - ${opt:vpc-subnet-a}
+          - ${opt:vpc-subnet-b}
 <% routes.forEach(function(route){ %>
     <%- route.operationId %>:
         handler: src/index.handler

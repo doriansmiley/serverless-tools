@@ -269,6 +269,7 @@ class ApiGenerator extends Generator {
             this.destinationPath('src/index.ts'),
             {
                 routesDefs: this.routesDefs,
+                specFile: this.specFile,
                 apiName: this.answers.apiName,
                 importStatements: this.importStatements
             }

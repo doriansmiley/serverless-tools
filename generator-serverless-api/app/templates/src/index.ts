@@ -8,6 +8,8 @@ import {JWTController} from './controllers/JWTController';
 import {XSSController} from './controllers/XSSController';
 import * as cors from 'cors';
 const debug = require('debug')('<%- apiName %>');
+const swaggerDocument = require('../apiSpec.json');
+const swaggerUi = require('swagger-ui-express');
 <%- importStatements %>
 
 const app = express();
@@ -31,23 +33,16 @@ app.get('/', cors(), function (req, res) {
     res.status(200).send('Hello World! I am the <%- apiName %> API ' +  process.env.API_VERSION);
 });
 
-// IMPORTANT: API Gateway & Lambda can not be used as a web server to serve static content!!!
-// If you run this API locally with:
-// app.listen(3001, () => debug('Example app listening on port 3001!'));
-// you can access the docs at /api-docs, otherwise the dependent files in the returned HMLT will fail to load.
-// require OpenAPI spec
-// const swaggerDocument = require('./apiSpec.json');
-// add swagger docs
-// app.use('/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// JWT authentication
-app.use(/(\/v[0-9])?/, new JWTController().register());
-
 const xssConfig = {
     stripIgnoreTag: true
 };
-
 app.use(/(\/v[0-9])?/, new XSSController(xssConfig).register());
+
+//setup route for documents
+app.use('/docs/', cors(), swaggerUi.serveWithOptions({ redirect: false }), swaggerUi.setup(swaggerDocument));
+
+// JWT authentication
+app.use(/(\/v[0-9])?/, new JWTController().register());
 
 // define API routes
 
