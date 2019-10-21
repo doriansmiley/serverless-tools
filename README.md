@@ -62,11 +62,14 @@ Your service will be accessible on `localhost:3000`.
 
 ## Deployment
 
-We deploy to AWS using serverless directly. You will need the AWS Credentials setup on your machine. Check with DevOps if you need help with this
+You can deploy the API using the following command.
+The `aws-profile` param informs the Serverless Framework what aws keypair to use.
+Note this profile must be configured in your `.aws` directory as part of your AWS CLI setup.
+
 
 ```bash
 serverless deploy -v \
-    --profile <profile> \
+    --aws-profile <profile> \
     --stage development \
     --alert-email "<email>" \
     --jwt-secret "<jwtsecret>" \
@@ -92,10 +95,6 @@ Please note, not all alarms are setup automatically. The following alarms need t
     * rule: >= 5 errors in 5 minutes
     * statistic: Sum
 
-For staging, you can set the following variables:
-
-* AWS Profile: `serverless`
-* Pilgrim Secret: obtain from team members or DevOps
 
 ### Tear Down
 

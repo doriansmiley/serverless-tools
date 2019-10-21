@@ -1,6 +1,6 @@
 {
   "name": "generator-serverless-api",
-  "version": "1.0.3",
+  "version": "1.2.0",
   "description": "API generator for Open API 3.0",
   "files": [
     "app",
