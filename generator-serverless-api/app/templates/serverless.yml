@@ -37,9 +37,7 @@ plugins:
     - serverless-offline
     - serverless-plugin-stage-variables
     - serverless-plugin-aws-alerts
-    - serverless-plugin-bind-deployment-id
     - serverless-plugin-tracing
-    - serverless-plugin-warmup
     - serverless-plugin-canary-deployments
 
 provider:
@@ -112,7 +110,6 @@ functions:
                 - Content-Type
                 - Authorization
                 - x-amzn-trace-id
-      warmup: true
       environment:
         STAGE: ${opt:stage}
         JWT_SECRET: ${opt:jwt-secret}
@@ -134,7 +131,6 @@ functions:
                 - Content-Type
                 - Authorization
                 - x-amzn-trace-id
-      warmup: true
       environment:
         STAGE: ${opt:stage}
         JWT_SECRET: ${opt:jwt-secret}
@@ -157,7 +153,6 @@ functions:
                       - Content-Type
                       - Authorization
                       - x-amzn-trace-id
-        warmup: true
         environment:
             STAGE: ${opt:stage}
             JWT_SECRET: ${opt:jwt-secret}
@@ -209,9 +204,6 @@ resources:
               Properties:
                 RestApiId:
                   Ref: "ApiGatewayRestApi"
-                DeploymentId:
-                  # refer to https://github.com/svdgraaf/serverless-plugin-stage-variables/issues/15 for __deployment__
-                  Ref: __deployment__
                 MethodSettings:
                   - DataTraceEnabled: true
                     HttpMethod: "*"

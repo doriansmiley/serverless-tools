@@ -55,11 +55,6 @@ const wrapper = serverless (app, {callbackWaitsForEmptyEventLoop: false});
 const handler = async (event, context, callback) => {
     return new Promise(async (resolve, reject) => {
         try {
-            /** Immediate response for WarmUP plugin */
-            if (event.source === 'serverless-plugin-warmup') {
-                debug('WarmUP - Lambda is warm!');
-                return resolve('Lambda is warm!');
-            }
             const result = await wrapper(event, context);
             resolve(result);
         } catch (e) {

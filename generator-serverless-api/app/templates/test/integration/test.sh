@@ -6,7 +6,18 @@ export LOCAL_TESTING=1
 [[ -z $API_GATEWAY_HOST ]] && export API_GATEWAY_HOST='localhost'
 [[ -z $API_GATEWAY_PORT ]] && export API_GATEWAY_PORT=3000
 [[ -z $STAGE ]] && export STAGE=local
+# by default make sure we don't prepend stages to the urls
+# kost people deploy stages to seperate AWS accounts and don't inlcude them
+# in the URL
+export NO_STAGE=--noPrependStageInUrl
+# if there is an API gateway stage (required when not using a custom domian name)
+# make sure stage is equal to the value and --noPrependStageInUrl is undefined
+[[ $API_GATEWAY_STAGE ]] && export STAGE=$API_GATEWAY_STAGE
+[[ $API_GATEWAY_STAGE ]] && unset NO_STAGE
 
+printf "\nAPI Gateway stage is $API_GATEWAY_STAGE\n"
+printf "\nStage is $STAGE\n"
+printf "\nAppend stage param is $NO_STAGE\n"
 # Determine if testing locally
 # if [ -z string ] True if the string is null (an empty string)
 if [ -z $(echo "${API_GATEWAY_HOST}" | sed -n 's/^\(localhost\)/\1/p') ]; then
@@ -34,7 +45,7 @@ if [ "$LOCAL_TESTING" = "1" ]; then
     printf "\nStarting up service\n"
 
     # start the API using serverless
-    nohup serverless offline start --noPrependStageInUrl --host $API_GATEWAY_HOST --port $API_GATEWAY_PORT --stage $STAGE --alert-email $ALERT_EMAIL --jwt-secret $JWT_SECRET &
+    nohup serverless offline start $NO_STAGE --host $API_GATEWAY_HOST --port $API_GATEWAY_PORT --stage $STAGE --alert-email $ALERT_EMAIL --jwt-secret $JWT_SECRET &
     echo $!
 
     # store the process ID
