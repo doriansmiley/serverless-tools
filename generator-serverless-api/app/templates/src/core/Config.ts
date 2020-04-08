@@ -5,7 +5,7 @@ export class Config {
     protected _serviceMap: object = null; // hash to look up routes
 
     public baseUrl: string; // base http address of application ie http://localhost:3000. Note DO NOT include the trailing /.
-    public webRoot: string = ''; // path relative to webroot where the application is deployed
+    public webRoot = ''; // path relative to webroot where the application is deployed
     public token: string = null; // used for oAuth authentication schemes and similar token based authentication systems
     // used for assigning a concrete service implementation. Must be in the form: /v + version number. for example: /v1
     public serviceCode: string = null;

@@ -1,7 +1,4 @@
 export class UuidUtils {
-    public constructor() {
-
-    }
 
     public static generateUUID(): string {
         let d = new Date().getTime();

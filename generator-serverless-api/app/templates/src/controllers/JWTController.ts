@@ -56,7 +56,7 @@ export class JWTController extends AbstractController {
         }
     }
     // override and call next to proceed with request
-    protected next(req: express.Request, res: express.Response, next: (e?) => {}, result: any): void {
+    protected next(req: express.Request, res: express.Response, next: (e?) => void, result: any): void {
         next();
     }
     // stub for override

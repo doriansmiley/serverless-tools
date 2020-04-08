@@ -34,7 +34,7 @@ if [ "$LOCAL_TESTING" = "1" ]; then
     printf "\nStarting up service\n"
 
     # start the API using serverless
-    nohup serverless offline start --host $API_GATEWAY_HOST --port $API_GATEWAY_PORT --stage $STAGE --alert-email $ALERT_EMAIL --jwt-secret $JWT_SECRET &
+    nohup serverless offline start --noPrependStageInUrl --host $API_GATEWAY_HOST --port $API_GATEWAY_PORT --stage $STAGE --alert-email $ALERT_EMAIL --jwt-secret $JWT_SECRET &
     echo $!
 
     # store the process ID

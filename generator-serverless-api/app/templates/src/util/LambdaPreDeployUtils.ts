@@ -39,7 +39,7 @@ export class LambdaPreDeployUtils {
         return this.codedeploy.putLifecycleEventHookExecutionStatus(params).promise();
     }
 
-    public async invoke(functionName: string, payload: any = {}, expectedStatusCode: number = 200, expectedBody: string = ''): Promise<TestResultEnum> {
+    public async invoke(functionName: string, payload: any = {}, expectedStatusCode = 200, expectedBody = ''): Promise<TestResultEnum> {
         try {
             const response = await this.invokeAsync(functionName, JSON.stringify(payload));
             console.log('[INFO] ' + functionName + ' ' + response.StatusCode + ' ' + response.Payload.toString());

@@ -6,6 +6,7 @@ import {UuidUtils} from '../util/UuidUtils';
 import {Config} from '../core/Config';
 import {Context} from '../core/Context';
 import { object } from 'joi';
+import {RequestHandler} from 'express';
 
 export enum LogLevels {
     LOG = 'LOG',
@@ -98,7 +99,7 @@ export abstract class AbstractController {
     }
     // some controllers act as middleware and need to call next while others usually send a response
     // this is an override point for middleware
-    protected next(req: express.Request, res: express.Response, next: (e) => {}, result: any): void {
+    protected next(req: express.Request, res: express.Response, next: (e) => void, result: any): void {
         res.json(result);
     }
 
@@ -130,8 +131,8 @@ export abstract class AbstractController {
      Article here: https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-nodejs-subsegments.html
      Full XRay docs for nodeJS are here: https://docs.aws.amazon.com/xray-sdk-for-nodejs/latest/reference/index.html
      */
-    public register(): Function {
-        return (req: express.Request, res: express.Response, next: (e) => {}) => {
+    public register(): RequestHandler {
+        return (req: express.Request, res: express.Response, next: (e) => void) => {
             // populate request id if it doesn't exist
             req['id'] = (!req.hasOwnProperty('id')) ? UuidUtils.generateUUID() : req['id'];
             AWSXRay.captureAsyncFunc(this.getSegmentName(), (subsegment) => {
