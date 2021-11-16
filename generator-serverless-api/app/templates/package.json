@@ -18,7 +18,7 @@
   "dependencies": {
     "async": "^3.2.0",
     "atob": "^2.1.2",
-    "aws-sdk": "^2.655.0",
+    "aws-sdk": "^2.814.0",
     "aws-xray-sdk": "^2.5.0",
     "btoa": "^1.2.1",
     "cors": "^2.8.5",
