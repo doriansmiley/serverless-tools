@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@angular/compiler": "^9.1.1",
-    "@angular/core": "^9.1.1",
+    "@angular/core": "^11.0.5",
     "@rabblerouser/local-kinesis-lambda-runner": "^0.2.5",
     "@types/aws-lambda": "8.10.47",
     "@types/joi": "^14.3.4",
