@@ -16,7 +16,7 @@
   "author": "Your Name <your@email.com>",
   "license": "ISC",
   "dependencies": {
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "atob": "^2.1.2",
     "aws-sdk": "^2.655.0",
     "aws-xray-sdk": "^2.5.0",
