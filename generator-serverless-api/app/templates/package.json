@@ -22,7 +22,7 @@
     "aws-xray-sdk": "^2.5.0",
     "btoa": "^1.2.1",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-openapi-validate": "^0.5.1",
     "joi": "^14.3.1",
     "jsdom": "^16.2.2",
